@@ -1,0 +1,84 @@
+<div ng-show="!user.authenticated">Please log in to upload dataset.</div>
+
+<div class="row" ng-show="user.authenticated">
+  <div class="col-md-6">
+    <span class="view-title">Upload Dataset</span>
+    <p>This view allows you to upload a data file into the server. 
+       The documents in the file will be loaded into the database using mlcp.</p>
+
+    <form name="removeForm" class="form-inline" style="margin-bottom:10px" novalidate>
+      <div class="form-group">
+        <label class="control-label">Remove all documents in this directory:</label>
+        <input type="text" name="directory" class="form-control" ng-model="remover.directory" required />
+      </div>
+      <button class="btn btn-default" ng-click="removeAll()" ng-disabled="removeForm.$invalid">Remove</button>
+      <span ng-show="remover.loading">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
+    </form>
+
+    <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
+    <form id="uploadForm" name="uploadForm" action="/api/mlcp/upload" method="post" 
+          enctype="multipart/form-data" role="form" novalidate="novalidate">
+
+      <div class="form-group">
+        <label>Data File</label>
+        <div class="flex-wrapper" style="margin-top: 2px;">
+          <div class="flex">
+            <div class="file-upload-note">{{note}}</div>
+          </div>
+          <div style="margin-left:20px;">
+            <div class="file-upload-button-wrapper btn btn-success">
+              <span>Choose File</span>
+              <input type="file" name="data" onchange="angular.element(this).scope().onFileSelected(this.files)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary" 
+                ng-click="uploadFile()" 
+                ng-show="show_upload_button" 
+                ng-disabled="uploadForm.$invalid">Upload</button>
+      </div>
+
+    </form>
+
+    <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
+    <form ng-show="show_import_form" name="importForm" method="post" novalidate="novalidate">
+
+      <div class="form-group">
+        <label class="control-label">Database Directory (must start and end with /)</label>
+        <input type="text" name="directory" class="form-control" ng-model="importer.directory" required />
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Element Name</label>
+        <input type="text" name="element" class="form-control" ng-model="importer.element" required />
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">URI ID Field</label>
+        <select class="form-control" 
+                ng-options="field for field in importer.fields"
+                ng-model="importer.uri_id"
+                ng-change="showUriID()"></select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Element Range Index Configuration</label>
+        <div index-builder="data"></div>
+        <pre ng-bind="showIndexes()"></pre>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary" type="button"
+                ng-click="importFile()"
+                ng-disabled="importForm.$invalid">Import</button>
+      </div>
+
+    </form>
+
+    <div ng-bind-html="trustAsHtml(message)"></div>
+  </div>
+
+</div>

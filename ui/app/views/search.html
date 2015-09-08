@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-md-12">
+    <span class="view-title">Search Results</span>
+    <div ng-show="!model.user.authenticated">Please log in to see results.</div>
+    <div class="row">
+      <ml-facets class="col-md-3" facets="model.search.facets" 
+                 toggle="toggleFacet(facet, value)"
+                 prettyname="formatFacet(facet)"
+                 template="/template/facets.html"></ml-facets>
+      <div class="col-md-9">
+        <h3 ng-if="model.search.total === 0">No results to show</h3>
+        <div ng-if="model.search.total > 0" class="results">
+          <pagination ng-model="model.page" ng-change="search()" max-size="10" boundary-links="true"
+                      total-items="model.search.total" items-per-page="model.search['page-length']"></pagination>
+          <ml-metrics search="model.search"></ml-metrics>
+          <ml-results template="/views/search-results.html" results="model.search.results"></ml-results>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

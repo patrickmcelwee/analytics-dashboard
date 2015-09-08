@@ -1,0 +1,83 @@
+<div ng-show="!user.authenticated">Please log in to retrieve query options.</div>
+
+<div class="row" ng-show="user.authenticated">
+  <div class="col-md-6">
+    <span class="view-title">Query Options</span>
+    <p>A list of all the named query options.</p>
+
+    <div class="table-responsive">
+      <table class="table table-bordered" ng-if="options.length>0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>URI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="option in options">
+            <td>{{option.name}}</td>
+            <td>{{option.uri}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Metadata about all installed transforms.</p>
+    <div class="table-responsive">
+      <table class="table table-bordered" ng-if="transforms.length>0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Transform Source</th>
+            <th>Source Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="transform in transforms">
+            <td>{{transform.name}}</td>
+            <td>{{transform['transform-source']}}</td>
+            <td>{{transform['source-format']}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-toolbar" style="margin-bottom:15px" ng-if="claims.length>0">
+      <div class="btn-group">
+        <button class="btn btn-primary" ng-click="deleteClaims()">
+          <span class="fa fa-trash-o"></span> Delete Claims
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive" ng-if="claims.length>0">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>URI</th>
+            <th>CLM_ID</th>
+            <th>DESYNPUF_ID</th>
+            <th>CLM_FROM_DT</th>
+            <th>CLM_THRU_DT</th>
+            <th>CLM_ADMSN_DT</th>
+            <th>CLM_PMT_AMT</th>
+            <th>CLM_UTLZTN_DAY_CNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="claim in claims">
+            <td>{{claim.uri}}</td>
+            <td>{{claim.content.CLM_ID}}</td>
+            <td>{{claim.content.DESYNPUF_ID}}</td>
+            <td>{{claim.content.CLM_FROM_DT}}</td>
+            <td>{{claim.content.CLM_THRU_DT}}</td>
+            <td>{{claim.content.CLM_ADMSN_DT}}</td>
+            <td>{{claim.content.CLM_PMT_AMT}}</td>
+            <td>{{claim.content.CLM_UTLZTN_DAY_CNT}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div ng-show="!user.authenticated">Please log in to manage your reports.</div>
+
+<div class="row" ng-show="user.authenticated">
+  <div class="col-md-6">
+    <span class="view-title">Manage Reports</span>
+    <div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div>
+    <p>Total reports: {{reports.length}}</p>
+
+    <div data-ng-if="reports.length>0">
+      <!-- toolbar -->
+      <div class="btn-toolbar" role="toolbar" style="margin-bottom:5px">
+        <div class="btn-group">
+          <a role="button" class="btn btn-default" data-ng-click="tableParams.sorting({})">
+            <i class="fa fa-sort"></i> Clear Sorting</a>
+          <a role="button" class="btn btn-default" data-ng-click="tableParams.filter({})">
+            <i class="fa fa-sort"></i> Clear Filter</a>
+        </div>
+      </div>
+
+      <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}</p>
+      <p><strong>Filter:</strong> {{tableParams.filter()|json}}</p>
+
+      <!-- grid -->
+      <table ng-table="tableParams" class="table ng-table-responsive" show-filter="true">
+        <tbody>
+          <tr ng-repeat="report in $data">
+            <td sortable="'name'" data-title="'Name'" filter="{ 'name': 'text' }" style="width:220px">
+              <a class="editor-link" data-ng-click="showReportEditor(report)">{{report.name}}</a>
+            </td>
+            <td sortable="'description'" data-title="'Description'">{{report.description}}</td>
+            <td data-title="'View'" class="text-center">
+              <a class="editor-link" data-ng-click="gotoDashboard(report.uri)">
+                <i class="fa fa-dashboard"></i>
+              </a>
+            </td>
+            <td data-title="'Delete'" class="text-center">
+              <a class="editor-link" data-ng-click="showReportRemover(report)">
+                <i class="fa fa-trash-o"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="delete-report-dialog" class="modal modal-wide fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Delete Report</h4>
+      </div>
+      <div class="modal-body">This action will delete the report. Are you sure you want to continue?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          <span class="fa fa-close"></span> Cancel
+        </button>
+        <button type="button" class="btn btn-primary" data-ng-click="deleteReport()">
+          <span class="fa fa-check"></span> OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="edit-report-dialog" class="modal modal-wide fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Report</h4>
+      </div>
+
+      <form name="editReportForm" ng-submit="updateReport()"
+            class="form-horizontal" novalidate>
+        <div class="modal-body" style="padding-top:10px;">
+          <p>The fields marked with 
+             asterisk <i class='fa fa-asterisk mandatory-field'></i> are mandatory.</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label>
+            <div class="col-sm-8">
+              <input type="text" name="name" class="form-control" ng-model="report.name" readonly />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Description</label>
+            <div class="col-sm-8">
+              <input type="text" name="description" class="form-control" 
+                     ng-model="report.description" />
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : editReportForm.department.$invalid && !editReportForm.department.$pristine }">
+            <label class="col-sm-4 control-label">Department <i class="fa fa-asterisk mandatory-field"></i></label>
+            <div class="col-sm-8">
+              <input type="text" name="department" class="form-control" 
+                     ng-model="report.department" required />
+              <p ng-show="editReportForm.department.$invalid && !editReportForm.department.$pristine" class="help-block">Department is required.</p>
+            </div>
+          </div>
+
+        </div> <!-- End the modal-body -->
+
+        <div class="modal-footer">
+          <button class="btn btn-default" data-dismiss="modal">
+            <i class="fa fa-close"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" ng-disabled="editReportForm.$invalid">
+            <i class="fa fa-check"></i> Submit
+          </button>
+        </div> <!-- End the modal-footer -->
+      </form>
+    </div>
+  </div>
+</div>

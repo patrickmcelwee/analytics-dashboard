@@ -1,0 +1,44 @@
+<div ng-show="model.user.authenticated">
+<div class="row">
+  <div class="col-md-6">
+    <span class="view-title">Edit Profile</span>
+    <p>This view allows you to modify your profile.</p>
+    <form name="profileForm">
+      <div class="form-group">
+        <label class="control-label">Full name</label>
+        <input type="text" class="form-control" placeholder="full name of user" ng-model="model.user.fullname" />
+      </div>
+
+      <div class="form-group">
+        <!-- show empty field if no emails yet -->
+        <label class="control-label">E-mail(s)</label>
+        <div class="input-group">
+          <input type="email" name="newEmail" class="form-control" placeholder="e-mail of user" ng-model="model.newEmail" />
+          <div class="input-group-btn" style="vertical-align:top;">
+            <button class="btn btn-default" ng-click="addEmail()"><span class="glyphicon glyphicon-plus"></span></button>
+          </div>
+        </div>
+        <div class="valid-email">
+          <div class="error" ng-show="profileForm.newEmail.$error.email">Not valid email!</div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-repeat="email in model.user.emails track by $index">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="e-mail of user" ng-model="model.user.emails[$index]">
+          <span class="input-group-addon" ng-click="removeEmail($index)">
+            <span class="glyphicon glyphicon-remove"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="btn-toolbar" role="toolbar" style="margin-top:10px">
+        <div class="btn-group pull-right">
+          <a class="btn btn-default" href="/">Cancel</a>
+          <button class="btn btn-primary" ng-click="submit()">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

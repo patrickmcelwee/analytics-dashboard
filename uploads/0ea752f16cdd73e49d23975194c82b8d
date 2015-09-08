@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persons>
+
+  <person>
+    <ID>10001</ID>
+    <NAME>Johnson</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>20</AGE>
+    <CITY>Ottawa</CITY>
+    <STATE>ON</STATE>
+    <SALARY>18000</SALARY>
+  </person>
+
+  <person>
+    <ID>10002</ID>
+    <NAME>Harding</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>30</AGE>
+    <CITY>Ottawa</CITY>
+    <STATE>ON</STATE>
+    <SALARY>52000</SALARY>
+  </person>
+
+  <person>
+    <ID>10003</ID>
+    <NAME>Tom</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>40</AGE>
+    <CITY>Ottawa</CITY>
+    <STATE>ON</STATE>
+    <SALARY>25000</SALARY>
+  </person>
+
+  <person>
+    <ID>10004</ID>
+    <NAME>Jimmy</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>50</AGE>
+    <CITY>Toronto</CITY>
+    <STATE>ON</STATE>
+    <SALARY>27000</SALARY>
+  </person>
+
+  <person>
+    <ID>10005</ID>
+    <NAME>Jackson</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>40</AGE>
+    <CITY>Toronto</CITY>
+    <STATE>ON</STATE>
+    <SALARY>32000</SALARY>
+  </person>
+
+  <person>
+    <ID>10006</ID>
+    <NAME>James</NAME>
+    <GENDER>Male</GENDER>
+    <AGE>30</AGE>
+    <CITY>Toronto</CITY>
+    <STATE>ON</STATE>
+    <SALARY>75000</SALARY>
+  </person>
+
+  <person>
+    <ID>10007</ID>
+    <NAME>Mary</NAME>
+    <GENDER>Female</GENDER>
+    <AGE>20</AGE>
+    <CITY>Vancouver</CITY>
+    <STATE>BC</STATE>
+    <SALARY>30000</SALARY>
+  </person>
+
+  <person>
+    <ID>10008</ID>
+    <NAME>Jessica</NAME>
+    <GENDER>Female</GENDER>
+    <AGE>30</AGE>
+    <CITY>Vancouver</CITY>
+    <STATE>BC</STATE>
+    <SALARY>56000</SALARY>
+  </person>
+
+  <person>
+    <ID>10009</ID>
+    <NAME>Amy</NAME>
+    <GENDER>Female</GENDER>
+    <AGE>40</AGE>
+    <CITY>Vancouver</CITY>
+    <STATE>BC</STATE>
+    <SALARY>34000</SALARY>
+  </person>
+
+  <person>
+    <ID>10010</ID>
+    <NAME>Joy</NAME>
+    <GENDER>Female</GENDER>
+    <AGE>50</AGE>
+    <CITY>Vancouver</CITY>
+    <STATE>BC</STATE>
+    <SALARY>90000</SALARY>
+  </person>
+
+</persons>

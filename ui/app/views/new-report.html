@@ -1,0 +1,40 @@
+<div ng-show="!user.authenticated">Please log in to create new report.</div>
+
+<div class="row" ng-show="user.authenticated">
+  <div class="col-md-6">
+    <span class="view-title">Create New Report</span>
+    <p>A report primarily consists of widgets. This view will 
+       create a blank report. You can then add widgets into the
+       report using the Report Dashboard.</p>
+    <p>The fields marked with asterisk <i class='fa fa-asterisk mandatory-field'></i> are mandatory.</p>
+
+    <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
+    <form name="newReportForm" ng-submit="createReport()" novalidate>
+      <div class="form-group" ng-class="{ 'has-error' : newReportForm.name.$invalid && !newReportForm.name.$pristine }">
+        <label class="control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label>
+        <input type="text" name="name" class="form-control" ng-model="report.name" required />
+        <p ng-show="newReportForm.name.$invalid && !newReportForm.name.$pristine" class="help-block">Name is required.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Description</label>
+        <input type="text" name="description" class="form-control" 
+               ng-model="report.description" />
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : newReportForm.department.$invalid && !newReportForm.department.$pristine }">
+        <label class="control-label">Department <i class="fa fa-asterisk mandatory-field"></i></label>
+        <input type="text" name="department" class="form-control" ng-model="report.department" required />
+        <p ng-show="newReportForm.department.$invalid && !newReportForm.department.$pristine" class="help-block">Department is required.</p>
+      </div>
+
+      <div class="btn-toolbar" role="toolbar" style="margin-top:10px">
+        <div class="btn-group pull-right">
+          <button type="submit" class="btn btn-primary" ng-disabled="newReportForm.$invalid">
+            <span class="fa fa-check"></span> Submit</button>
+        </div>
+      </div>
+    </form>
+    <p>{{error_message}}</p>
+  </div>
+</div>
