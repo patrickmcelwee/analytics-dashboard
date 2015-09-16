@@ -43,7 +43,7 @@ function filterContent(context, params, content) {
             }
           }
           if (!valueFound) {
-            result[key] = children.length;
+            result[key] = null;
           }
         }
       }

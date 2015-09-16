@@ -196,29 +196,6 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
     },
 */
     {
-      name: 'Pie Chart',
-      directive: 'ml-pie-chart',
-      title: 'Pie Chart',
-      icon: 'fa fa-th',
-      style: {
-        width: '100%'
-      },
-      settingsModalOptions: {
-        templateUrl: 'widgets/template/piechart-settings.html',
-        //controller: 'WidgetSpecificSettingsCtrl',
-        backdrop: false
-      },
-      onSettingsClose: function(result, widget) {
-        //console.log('Widget-specific settings resolved!');
-        //console.log(result);
-        jQuery.extend(true, widget, result);
-      },
-      onSettingsDismiss: function(reason, scope) {
-        //console.log('Settings have been dismissed: ', reason);
-        //console.log('Dashboard scope: ', scope);
-      }
-    },
-    {
       name: 'Canvas Chart' ,
       directive: 'ml-canvas-chart',
       title: 'Canvas Chart',

@@ -398,6 +398,7 @@ var search2 = {
 
       $scope.executeQuery = function() {
         var dimensions = $scope.widget.dataModelOptions.dimensions;
+        // Number of groupby fields.
         var count = 0;
 
         dimensions.forEach(function(dimension) {
@@ -573,9 +574,20 @@ var search2 = {
       };
 
       $scope.createHighcharts = function(count, headers, results) {
+        var chartType = $scope.widget.dataModelOptions.chart;
+
+        if (chartType === 'column')
+          $scope.createColumnHighcharts(count, headers, results);
+        else
+          $scope.createPieHighcharts(count, headers, results);
+      };
+
+      // Create a column chart
+      $scope.createColumnHighcharts = function(count, headers, results) {
         var categories = [];
         var series = [];
 
+        // count is number of groupby fields.
         for (var i = count; i < headers.length; i++) {
           series.push({
             name: headers[i],
@@ -597,7 +609,7 @@ var search2 = {
 
         $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
           chart: {
-            type: $scope.widget.dataModelOptions.chart
+            type: 'column'
           },
           title: {
             text: ''
@@ -613,23 +625,104 @@ var search2 = {
             }
           },
           tooltip: {
+            shared: true,
+            useHTML: true,
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
+                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>'
           },
           plotOptions: {
             column: {
               pointPadding: 0.2,
               borderWidth: 0
-            },
+            }
+          },
+          series: series
+        });
+      };
+
+      // Create a pie chart
+      $scope.createPieHighcharts = function(count, headers, results) {
+        var colors = Highcharts.getOptions().colors;
+        var categories = [];
+        var series = [];
+
+        // count is number of groupby fields.
+        // Skip all groupby fields.
+        for (var i = count; i < headers.length; i++) {
+          series.push({
+            name: headers[i],
+            data: []
+          });
+        }
+
+        var rings = series.length;
+        if (rings > 1) {
+          var percent = Math.floor(100/rings);
+          var ring = 0;
+
+          // The innermost ring
+          series[ring].size = percent + '%';
+          /*series[ring].dataLabels = {
+            distance: -30
+          };*/
+
+          for (ring = 1; ring < rings; ring++) {
+            series[ring].innerSize = percent*ring + '%';
+            series[ring].size = percent*(ring+1) + '%';
+            /*series[ring].dataLabels = {
+              distance: (0-percent*ring)
+            };*/
+          }
+        }
+
+        results.forEach(function(row) {
+          var groups = [];
+          for (var i = 0; i < count; i++) {
+            groups.push(row[i]);
+          }
+          var category = groups.join(',');
+          categories.push('(' + category + ')');
+
+          for (var i = count; i < row.length; i++) {
+            series[i-count].data.push({
+              name: category,
+              color: colors[i-count],
+              y: row[i]
+            });
+          }
+        });
+console.log(JSON.stringify(series, null, 2));
+        $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
+          chart: {
+            type: 'pie'
+          },
+          title: {
+            text: categories
+          },
+          yAxis: {
+            min: 0,
+            title: {
+              text: ''
+            }
+          },
+          tooltip: {
+            shared: true,
+            useHTML: true,
+            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>'
+          },
+          plotOptions: {
             pie: {
-              cursor: 'pointer',
+              shadow: false,
+              center: ['50%', '50%'],
               dataLabels: {
                 enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                useHTML: false,
+                format: '<b>{point.name} {series.name}</b>: {point.percentage:.1f}%',
                 style: {
                   color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                 }
