@@ -147,7 +147,7 @@ angular.module('ui.dashboard')
           } else {
             widget.mode = 'View';
           }
-          console.log(scope);
+          //console.log(scope);
           //$($event.currentTarget).text(widget.mode + ' Mode');
         };
 

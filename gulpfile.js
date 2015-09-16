@@ -28,7 +28,7 @@ var uglify = require('gulp-uglify');
 var options = {
   appPort: argv['app-port'] || 9070,
   mlHost: argv['ml-host'] || 'localhost',
-  mlPort: argv['ml-port'] || '8040',
+  mlPort: argv['ml-port'] || '8040', 
   database: 'analytics-dashboard-content',
   mlUser: 'admin',
   mlPassword: 'admin'

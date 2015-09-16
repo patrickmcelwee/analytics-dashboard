@@ -59,7 +59,7 @@
         };
 
         SmartGridDataModel.prototype.load = function() {
-          console.log(this);
+          //console.log(this);
         };
 
         return SmartGridDataModel;
@@ -121,6 +121,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
 
       $scope.executor = {};
       $scope.executor.transform = 'smart-filter';
+      $scope.executor.disableDownload = true;
 
       $scope.highchart = null;
 
@@ -154,6 +155,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         $scope.model.results = null;
         $scope.executor.dimensions = [];
         $scope.executor.results = [];
+        $scope.executor.disableDownload = true;
 
         if ($scope.highchart) {
           $scope.highchart.highcharts().destroy();
@@ -183,7 +185,8 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           rows: [],
           columns: [],
           computes: [],
-          options: ['headers=true']
+          options: ['headers=true'],
+          filters: {}
         };
 
         $scope.data.docs = [];
@@ -319,6 +322,45 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         $scope.options.saveDashboard();
       };
 
+      $scope.download = function() {
+        var data = [];
+
+        if ($scope.model.results) {
+          // Complex query
+          var headerRow = [];
+          $scope.model.results.headers.forEach(function(header) {
+            headerRow.push(header); 
+          });
+          data.push(headerRow);
+
+          $scope.model.results.results.forEach(function(result) {
+            data.push(result); 
+          });
+        } else if ($scope.executor.results.length > 0) {
+          // Simple query
+          var headerRow = [];
+          $scope.executor.dimensions.forEach(function(dimension) {
+            headerRow.push(dimension.name); 
+          });
+          data.push(headerRow);
+
+          $scope.executor.results.forEach(function(result) {
+            data.push(result); 
+          });
+        }
+
+        $http({
+          method: 'POST',
+          url: '/api/report/prepare',
+          data: {data : data}
+        }).then(function(response) {
+          // You can't download file through Ajax.
+          window.location = '/api/report/download';
+        }, function(response) {
+          // error
+        });
+      };
+
       $scope.execute = function() {
 
 var search2 = {
@@ -383,6 +425,24 @@ var search2 = {
       };
 
       $scope.executeComplexQuery = function(count) {
+        var queries = $scope.widget.dataModelOptions.query.query.queries;
+        var search = {
+          'search': {
+            'options': {
+              'search-option': ['unfiltered']
+            },
+            'query': {
+              'queries': queries
+            }
+          }
+        };
+
+        if ($scope.widget.mode === 'View' && $scope.executor.simple) {
+          search['search']['qtext'] = $scope.executor.simple;
+        } else {
+          search['search']['qtext'] = '';
+        }
+
         var params = {};
         var queryConfig = angular.copy($scope.model.queryConfig);
 
@@ -393,6 +453,8 @@ var search2 = {
         if ($scope.model.includeFrequency) {
           queryConfig.computes.push({fn: 'frequency'});
         }
+
+        queryConfig.filters = search;
 
         var dimensions = $scope.widget.dataModelOptions.dimensions;
         dimensions.forEach(function(dimension) {
@@ -429,6 +491,8 @@ var search2 = {
           $scope.model.loadingResults = false;
 
           $scope.createHighcharts(count, $scope.model.results.headers, $scope.model.results.results);
+
+          $scope.executor.disableDownload = false;
         }, function(response) {
           $scope.model.loadingResults = false;
 
@@ -454,6 +518,10 @@ var search2 = {
             }
           }
         };
+
+        if ($scope.widget.mode === 'View' && $scope.executor.simple) {
+          search['search']['qtext'] = $scope.executor.simple;
+        }
 
         var params = {
           'directory': directory,
@@ -499,6 +567,8 @@ var search2 = {
 
             $scope.executor.results.push(item);
           });
+
+          $scope.executor.disableDownload = false;
         });
       };
 
@@ -527,7 +597,7 @@ var search2 = {
 
         $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
           chart: {
-            type: 'column'
+            type: $scope.widget.dataModelOptions.chart
           },
           title: {
             text: ''
@@ -554,17 +624,20 @@ var search2 = {
             column: {
               pointPadding: 0.2,
               borderWidth: 0
+            },
+            pie: {
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+              }
             }
           },
           series: series
         });
-      };
-
-      $scope.cleanup = function() {
-        if ($scope.highchart) {
-          $scope.highchart.highcharts().destroy();
-          $scope.highchart = null;
-        }
       };
 
       // Kick off
@@ -579,7 +652,7 @@ var search2 = {
         console.log('widget.mode: ' + mode);
         //console.log($scope);
 
-        $scope.cleanup();
+        $scope.clearResults();
 
         $scope.contentUrl = mlReportService.getDirectiveTemplate(mode, 'ml-smart-grid');
 

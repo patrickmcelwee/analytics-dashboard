@@ -118,23 +118,40 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         groupingStrategy: '',
         directory: '',
         query: {},
-        dimensions: []
+        dimensions: [],
+        chart: 'column'
       },
-      style: {
-        width: '100%'
-      }
-    },
-    {
-      name: 'Time',
-      directive: 'ml-time',
-      title: 'Time',
-      icon: 'fa fa-th',
       style: {
         width: '100%'
       },
       settingsModalOptions: {
+        templateUrl: 'widgets/template/qb-settings.html',
+        //controller: 'QueryBuilderWidgetSettingsCtrl',
+        backdrop: false
+      },
+      onSettingsClose: function(result, widget) {
+        //jQuery.extend(true, widget, result);
+        widget.title = result.title;
+        widget.dataModelOptions.chart = result.dataModelOptions.chart;
+      },
+      onSettingsDismiss: function(reason, scope) {
+        // Do nothing here, since the user pressed cancel
+      }
+    },
+    {
+      name: 'Timer',
+      directive: 'ml-time',
+      title: 'Timer',
+      icon: 'fa fa-th',
+      style: {
+        width: '100%'
+      },
+      dataModelOptions: {
+        format: 'standard'
+      },
+      settingsModalOptions: {
         templateUrl: 'widgets/template/time-settings.html',
-        //controller: 'WidgetSpecificSettingsCtrl',
+        //controller: 'TimerWidgetSettingsCtrl',
         backdrop: false
       },
       onSettingsClose: function(result, widget) {
@@ -143,19 +160,20 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         jQuery.extend(true, widget, result);
       },
       onSettingsDismiss: function(reason, scope) {
-        console.log('Settings have been dismissed: ', reason);
-        console.log('Dashboard scope: ', scope);
+        //console.log('Settings have been dismissed: ', reason);
+        //console.log('Dashboard scope: ', scope);
       }
     },
     {
-      name: 'Monitor',
-      title: 'Monitor',
+      name: 'Scope Monitor',
+      title: 'Scope Monitor',
       icon: 'fa fa-list',
       style: {
         width: '100%'
       },
       templateUrl: 'template/percentage.html'
     },
+/*
     {
       name: 'Smart Chart',
       directive: 'ml-smart-chart',
@@ -176,6 +194,7 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         width: '100%'
       }
     },
+*/
     {
       name: 'Pie Chart',
       directive: 'ml-pie-chart',
@@ -190,13 +209,13 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         backdrop: false
       },
       onSettingsClose: function(result, widget) {
-        console.log('Widget-specific settings resolved!');
-        console.log(result);
+        //console.log('Widget-specific settings resolved!');
+        //console.log(result);
         jQuery.extend(true, widget, result);
       },
       onSettingsDismiss: function(reason, scope) {
-        console.log('Settings have been dismissed: ', reason);
-        console.log('Dashboard scope: ', scope);
+        //console.log('Settings have been dismissed: ', reason);
+        //console.log('Dashboard scope: ', scope);
       }
     },
     {

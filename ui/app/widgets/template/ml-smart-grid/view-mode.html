@@ -1,13 +1,18 @@
 <div class="view-mode">
   <p>The view mode displays the query results of the Query Builder.</p>
 
-  <div class="btn-toolbar" role="toolbar" style="margin-top:10px;margin-bottom:10px">
-    <div class="btn-group">
-      <button class="btn btn-primary" ng-click="execute()">
-        <span class="fa fa-eye"></span> Run</button>
+  <form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px">
+    <div class="form-group">
+      <label class="control-label">Search:</label>
+      <input type="text" name="name" class="form-control" ng-model="executor.simple" />
     </div>
+
+    <button class="btn btn-primary" ng-click="execute()">
+      <span class="fa fa-eye"></span> Run Report</button>
+    <button class="btn btn-default" ng-click="download()" ng-disabled="executor.disableDownload">
+      <span class="fa fa-download"></span> Download Report</button>
     <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-  </div>
+  </form>
 
   <div class="table-responsive" ng-if="executor.results.length>0">
     <table class="table table-bordered">
@@ -18,7 +23,7 @@
       </thead>
       <tbody>
         <tr data-ng-repeat="row in executor.results">
-          <td data-ng-repeat="cell in row">{{cell}}</td>
+          <td data-ng-repeat="cell in row track by $index">{{cell}}</td>
         </tr>
       </tbody>
     </table>

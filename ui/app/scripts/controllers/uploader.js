@@ -146,7 +146,7 @@ angular.module('app').controller('UploaderCtrl', ['$scope', '$http', '$sce', 'Us
                 'localname': value.field,
                 'collation': '',
                 'range-value-positions': false,
-                'invalid-values': 'reject'
+                'invalid-values': 'ignore'
             };
 
             if (value.value) {

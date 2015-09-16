@@ -23,15 +23,27 @@ function filterContent(context, params, content) {
       if (params[key]) {
         if (node.nodeType === 1) {
           var children = node.childNodes;
+          var valueFound = false;
           for (var j = 0; j < children.length; j++) {
             var child = children[j];
             if (child.nodeType === 3) {
-              if (params[key] === 'number')
-                result[key] = parseFloat(child.nodeValue);
-              else
-                result[key] = child.nodeValue;
+              var value = child.nodeValue;
+              if (params[key] === 'int' || params[key] === 'decimal') {
+                if (isNaN(value)) {
+                  result[key] = null;
+                } else {
+                  result[key] = parseFloat(value);
+                }
+              } else {
+                result[key] = value;
+              }
+
+              valueFound = true;
               break;
             }
+          }
+          if (!valueFound) {
+            result[key] = children.length;
           }
         }
       }

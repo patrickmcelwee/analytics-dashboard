@@ -10,6 +10,7 @@
 
 var async = require('async');
 var uuid = require('uuid');
+var csv = require('csv');
 
 var REPORT_DIRECTORY = '/report/';
 
@@ -371,6 +372,39 @@ exports.init = function(router, marklogic, dbconfig) {
         properties: []
       });
     }
+  });
+
+  // Prepare a report for download
+  router.route('/report/prepare').post(function(req, res) {
+    var uri = req.body.uri;
+    var name = req.body.name;
+    var data = req.body.data;
+
+    // If a CSV file has ID as the first two chars on the header row, when
+    // you open this file using Excel, Excel will detect that this file is 
+    // a SYLK file, but can still load it.
+    // If you surround the characters with double quotes it should work fine.
+    csv.stringify(data, {quoted: true}, function(err, output) {
+      req.session.report = output;
+
+      res.json({
+        success: true,
+        message: 'OK'
+      });
+    });
+
+  });
+
+  router.route('/report/download').get(function(req, res) {
+    res.setHeader('Content-Disposition', 'attachment; filename=report.csv');
+    res.writeHead(200, {
+        'Content-Type': 'text/csv'
+    });
+
+    res.write(req.session.report);
+    res.end();
+
+    delete req.session.report;
   });
 
 };

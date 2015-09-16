@@ -10,8 +10,10 @@
 
       var options = { format: 'json' };
 
-      if (uri.indexOf('/claims/') === 0) {
+      if (uri.indexOf('/claim/') === 0 || uri.indexOf('/claims/') === 0) {
         options.transform = 'claim-json';
+      } else if (uri.indexOf('/person/') === 0 || uri.indexOf('/persons/') === 0) {
+        options.transform = 'person-json';
       }
 
       mlRest.getDocument(uri, options).then(function(response) {

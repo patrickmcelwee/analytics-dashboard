@@ -3,7 +3,7 @@
 <div class="row" ng-show="user.authenticated">
   <div class="col-md-6">
     <span class="view-title">Query Options</span>
-    <p>A list of all the named query options.</p>
+    <p>A list of all named query options.</p>
 
     <div class="table-responsive">
       <table class="table table-bordered" ng-if="options.length>0">
@@ -55,25 +55,17 @@
         <thead>
           <tr>
             <th>URI</th>
-            <th>CLM_ID</th>
-            <th>DESYNPUF_ID</th>
-            <th>CLM_FROM_DT</th>
-            <th>CLM_THRU_DT</th>
-            <th>CLM_ADMSN_DT</th>
-            <th>CLM_PMT_AMT</th>
-            <th>CLM_UTLZTN_DAY_CNT</th>
+            <th>CID</th>
+            <th>PD_AMT</th>
+            <th>PROC_PRE_APRV_DAY_CNT</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="claim in claims">
             <td>{{claim.uri}}</td>
-            <td>{{claim.content.CLM_ID}}</td>
-            <td>{{claim.content.DESYNPUF_ID}}</td>
-            <td>{{claim.content.CLM_FROM_DT}}</td>
-            <td>{{claim.content.CLM_THRU_DT}}</td>
-            <td>{{claim.content.CLM_ADMSN_DT}}</td>
-            <td>{{claim.content.CLM_PMT_AMT}}</td>
-            <td>{{claim.content.CLM_UTLZTN_DAY_CNT}}</td>
+            <td>{{claim.content.CID}}</td>
+            <td>{{claim.content.PD_AMT}}</td>
+            <td>{{claim.content.PROC_PRE_APRV_DAY_CNT}}</td>
           </tr>
         </tbody>
       </table>

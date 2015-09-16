@@ -18,6 +18,37 @@ var xml2js = require('xml2js');
 
 var UPLOADER_DIRECTORY = '/uploader/';
 
+function makeIndexes(fields) {
+  var indexes = [];
+
+  fields.forEach(function(field) {
+    var index = {
+      'scalar-type': 'string',
+      'namespace-uri': '',
+      'localname': field,
+      'collation': 'http://marklogic.com/collation/codepoint',
+      'range-value-positions': false,
+      'invalid-values': 'ignore'
+    };
+
+    indexes.push(index);
+  });
+
+  var obj = {
+   'range-element-index': indexes
+  };
+
+  return obj;
+}
+
+function saveFields(fields) {
+  var obj = makeIndexes(fields);
+
+  fs.writeFile("index.json", JSON.stringify(obj, null, 2), function(err) {
+    console.log("The file was saved!");
+  }); 
+}
+
 function isValidFileType(type) {
   if (type === 'csv' || type === 'xml' || type === 'json') {
     return true;
@@ -127,6 +158,8 @@ var uploader = {
 
       if (isCsvFile) {
         var parser = csv.parse({delimiter: ','}, function(err, data) {
+          //console.log(data);
+
           jobj.importer.filetype = 'csv';
           jobj.importer.directory = '';
           jobj.importer.element = '';
@@ -134,6 +167,8 @@ var uploader = {
           var fields = data[0];
           jobj.importer.fields = fields;
           jobj.importer.uri_id = fields[0];
+
+          //saveFields(fields);
 
           getIndexes(req, res, options, jobj);
         });
@@ -218,6 +253,15 @@ var uploader = {
 
       // Sets the range indexes in the database properties.
       var indexes = req.body['indexes'];
+
+      // Uncomment this to create indexes for all fields.
+      //var indexes = makeIndexes(req.body['fields']);
+
+      // Uncomment this to remove all indexes.
+      //var indexes = {
+      //  'range-element-index': []
+      //};
+
       if (indexes) {
         var digest = digestClient(req.session.user.name, req.session.user.password);
         var apipath = '/manage/v2/databases/' + options.database + '/properties?format=json';
@@ -241,6 +285,7 @@ var uploader = {
           });
 
           finalRes.on('end', function() {
+            console.log('manage: ' + body);
             cleanup(res, filepath, message);
           });
 

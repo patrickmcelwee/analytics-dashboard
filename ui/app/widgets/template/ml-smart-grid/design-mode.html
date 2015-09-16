@@ -64,7 +64,7 @@
       </thead>
       <tbody>
         <tr data-ng-repeat="row in executor.results">
-          <td data-ng-repeat="cell in row">{{cell}}</td>
+          <td data-ng-repeat="cell in row track by $index">{{cell}}</td>
         </tr>
       </tbody>
     </table>
