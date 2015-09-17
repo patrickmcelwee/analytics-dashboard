@@ -121,6 +121,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
 
       $scope.executor = {};
       $scope.executor.transform = 'smart-filter';
+      $scope.executor.disableRun = true;
       $scope.executor.disableDownload = true;
 
       $scope.highchart = null;
@@ -245,6 +246,8 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
                 break;
               }
             }
+
+            $scope.executor.disableRun = false;
           } else {
             $scope.model.configError = 'No documents with range indices in the database';
           }
@@ -362,41 +365,6 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
       };
 
       $scope.execute = function() {
-
-var search2 = {
-  'search' : {
-    'query': {
-      'queries': [{
-        'directory-query': {
-          uri: ['/claims/']
-        }
-      }]
-    },
-    'options' : {
-      'values' : [{
-        'name' : 'search2',
-        'aggregate': [{'apply' : 'count'}],
-        'range' : {
-          'type': 'xs:decimal',
-          'element' : {'ns': '', 'name': 'CLM_UTLZTN_DAY_CNT'}
-        }
-      }]
-    }
-  }
-};
-
-        /*mlRest.values('search2', {
-          'directory': '/claim/',
-          'pageLength': 400,
-          'format': 'json'
-        }, search2).then(function(response) {
-          console.log(response);
-        });*/
-
-        $scope.executeQuery();
-      };
-
-      $scope.executeQuery = function() {
         var dimensions = $scope.widget.dataModelOptions.dimensions;
         // Number of groupby fields.
         var count = 0;
@@ -588,6 +556,7 @@ var search2 = {
         var series = [];
 
         // count is number of groupby fields.
+        // Skip all groupby fields.
         for (var i = count; i < headers.length; i++) {
           series.push({
             name: headers[i],
@@ -615,11 +584,9 @@ var search2 = {
             text: ''
           },
           xAxis: {
-            categories: categories,
-            crosshair: true
+            categories: categories
           },
           yAxis: {
-            min: 0,
             title: {
               text: ''
             }
@@ -627,7 +594,9 @@ var search2 = {
           tooltip: {
             shared: true,
             useHTML: true,
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            borderWidth: 1,
+            borderRadius: 10,
+            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                          '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
             footerFormat: '</table>'
@@ -645,7 +614,7 @@ var search2 = {
       // Create a pie chart
       $scope.createPieHighcharts = function(count, headers, results) {
         var colors = Highcharts.getOptions().colors;
-        var categories = [];
+        var measures = [];
         var series = [];
 
         // count is number of groupby fields.
@@ -655,6 +624,7 @@ var search2 = {
             name: headers[i],
             data: []
           });
+          measures.push(headers[i]);
         }
 
         var rings = series.length;
@@ -683,7 +653,6 @@ var search2 = {
             groups.push(row[i]);
           }
           var category = groups.join(',');
-          categories.push('(' + category + ')');
 
           for (var i = count; i < row.length; i++) {
             series[i-count].data.push({
@@ -693,16 +662,20 @@ var search2 = {
             });
           }
         });
-console.log(JSON.stringify(series, null, 2));
+
+        var title = 'Measures: ' + measures;
+
         $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
           chart: {
             type: 'pie'
           },
+          credits: {
+            enabled: false
+          },
           title: {
-            text: categories
+            text: title
           },
           yAxis: {
-            min: 0,
             title: {
               text: ''
             }
@@ -710,6 +683,8 @@ console.log(JSON.stringify(series, null, 2));
           tooltip: {
             shared: true,
             useHTML: true,
+            borderWidth: 1,
+            borderRadius: 10,
             headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                          '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
@@ -717,6 +692,7 @@ console.log(JSON.stringify(series, null, 2));
           },
           plotOptions: {
             pie: {
+              showInLegend: true,
               shadow: false,
               center: ['50%', '50%'],
               dataLabels: {
