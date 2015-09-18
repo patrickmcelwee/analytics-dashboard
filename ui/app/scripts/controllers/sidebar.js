@@ -24,7 +24,8 @@ angular.module('app').controller('SidebarCtrl', ['$scope', '$location', 'User', 
     $scope.showLoading = true;
     ReportService.getReports().then(function(response) {
       var contentType = response.headers('content-type');
-      $scope.reports = MarkLogic.Util.parseMultiPart(response.data, contentType);
+      var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
+      $scope.reports = page.results;
       $scope.showLoading = false;
     }, function() {
       $scope.showLoading = false;

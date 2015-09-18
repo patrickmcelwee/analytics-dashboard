@@ -26,7 +26,8 @@ angular.module('app').controller('ReportsCtrl', ['$scope', '$filter', '$location
     $scope.showLoading = true;
     ReportService.getReports().then(function(response) {
       var contentType = response.headers('content-type');
-      var reports = MarkLogic.Util.parseMultiPart(response.data, contentType);
+      var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
+      var reports = page.results; 
 
       if ($scope.tableParams) {
         $scope.reports.length = 0;

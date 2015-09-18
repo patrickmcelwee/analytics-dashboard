@@ -56,6 +56,8 @@
   </div>
 
   <div class="table-responsive" ng-if="executor.results.length>0">
+    <pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true"
+                total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination>
     <table class="table table-bordered">
       <thead>
         <tr>

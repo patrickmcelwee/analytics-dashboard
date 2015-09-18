@@ -126,6 +126,11 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
 
       $scope.highchart = null;
 
+      $scope.grid = {
+        page: 1,
+        total: 0
+      };
+
       $scope.showDimensions = function() {
         var dimensions = {
           dimensions: $scope.data.dimensions
@@ -379,7 +384,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         if (count)
           $scope.executeComplexQuery(count);
         else
-          $scope.executeSimpleQuery();
+          $scope.executeSimpleQuery(1);
       };
 
       $scope.getColumn = function(name) {
@@ -474,7 +479,14 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         });
       };
 
-      $scope.executeSimpleQuery = function() {
+      $scope.fetchPage = function() {
+        var start = 1 + ($scope.grid.page - 1) * $scope.widget.dataModelOptions.pageLength;
+
+        $scope.model.loadingResults = true;
+        $scope.executeSimpleQuery(start);
+      };
+
+      $scope.executeSimpleQuery = function(start) {
         var directory = '/' + $scope.widget.dataModelOptions.directory + '/';
         var queries = $scope.widget.dataModelOptions.query.query.queries;
         var search = {
@@ -494,8 +506,10 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
 
         var params = {
           'directory': directory,
-          'pageLength': 400,
+          'pageLength': $scope.widget.dataModelOptions.pageLength,
+          'start': start, // current pagination offset
           'category': 'content',
+          'view': 'metadata',
           'format': 'json'
         };
 
@@ -510,10 +524,10 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           $scope.executor.dimensions.push(item);
         });
 
+        // We need two transforms: one for JSON, one for XML.
+        // These transforms filter the document. The XML
+        // transform also converts am XML document to JSON.
         if ($scope.executor.transform) {
-          // We need two transforms: one for JSON, one for XML.
-          // These transforms filter the document. The XML
-          // transform also converts am XML document to JSON.
           params.transform = $scope.executor.transform;
 
           $scope.executor.dimensions.forEach(function(dimension) {
@@ -525,7 +539,10 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           $scope.model.loadingResults = false;
 
           var contentType = response.headers('content-type');
-          var results = MarkLogic.Util.parseMultiPart(response.data, contentType);
+          var pageResults = MarkLogic.Util.parseMultiPart(response.data, contentType);
+          var results = pageResults.results;
+
+          $scope.grid.total = pageResults.metadata.total;
 
           results.forEach(function(result) {
             var item = [];

@@ -119,7 +119,8 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         directory: '',
         query: {},
         dimensions: [],
-        chart: 'column'
+        chart: 'column',
+        pageLength: 10
       },
       style: {
         width: '100%'
@@ -132,6 +133,7 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
       onSettingsClose: function(result, widget) {
         //jQuery.extend(true, widget, result);
         widget.title = result.title;
+        widget.dataModelOptions.pageLength = result.dataModelOptions.pageLength;
         widget.dataModelOptions.chart = result.dataModelOptions.chart;
       },
       onSettingsDismiss: function(reason, scope) {

@@ -57,6 +57,7 @@ var MarkLogic;
 
       var parts = s.split(new RegExp(boundary));
       var docs = [];
+      var metadata = null;
 
       // First part is a preamble, last part is closing '--'
       for (var i = 1; i < parts.length-1; i++) {
@@ -75,12 +76,14 @@ var MarkLogic;
                 doc.uri = uri;
                 docs.push(doc);
                 break;
+              } else {
+                metadata = JSON.parse(subparts[1]);
               }
             }
           }
         }
       }
-      return docs;
+      return {results: docs, metadata: metadata};
     }
     Util.parseMultiPart = parseMultiPart;
 

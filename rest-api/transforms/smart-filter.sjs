@@ -5,10 +5,17 @@ function filterContent(context, params, content) {
     // before you can manipulate the content as a JavaScript object 
     // or modify it.
     var result = content.toObject();
+    var keys = Object.keys(result);
 
-    Object.keys(result).forEach(function(key) {
-      if (!params[key]) {
-        delete result[key];
+    keys.forEach(function(key) {
+      if (key !== 'snippet-format' &&
+          key !== 'total' &&
+          key !== 'start' &&
+          key !== 'page-length' &&
+          key !== 'metrics') {
+        if (!params[key]) {
+          delete result[key];
+        }
       }
     });
 
