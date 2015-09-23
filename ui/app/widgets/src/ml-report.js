@@ -68,14 +68,14 @@
 
 })(window.angular);
 
-angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlReportService',
-  function($compile, mlRest, mlReportService) {
+angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlReportService', 'NgTableParams',
+  function($compile, mlRest, mlReportService, NgTableParams) {
 
   return {
     restrict: 'A',
     replace: false,
     template: '<div ng-include="contentUrl"></div>',
-    controller: function($scope, $http, $q) {
+    controller: function($scope, $http, $q, $filter) {
       // Set the initial mode for this widget to View.
       $scope.showModeButton = true;
       $scope.widget.mode = 'View';
@@ -400,6 +400,17 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
 
       $scope.executeComplexQuery = function(count) {
         var queries = $scope.widget.dataModelOptions.query.query.queries;
+        if (queries.length === 1) {
+          // The first element has only one key.
+          var firstElement = queries[0];
+          var key = Object.keys(firstElement)[0];
+
+          // The group-by will fail if an or-query is empty, so we
+          // convert an empty query at the root level.
+          if (firstElement[key]['queries'].length === 0)
+            queries = [];
+        }
+
         var search = {
           'search': {
             'options': {
@@ -464,6 +475,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           $scope.model.queryError = null;
           $scope.model.loadingResults = false;
 
+          $scope.createComplexTable($scope.model.results.headers, $scope.model.results.results);
           $scope.createHighcharts(count, $scope.model.results.headers, $scope.model.results.results);
 
           $scope.executor.disableDownload = false;
@@ -475,6 +487,109 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
               title: response.statusText,
               description: response.data
             };
+          }
+        });
+      };
+
+      $scope.createSimpleTable = function(headers, results) {
+console.log(headers);
+console.log(results);
+        $scope.cols = [
+          //{ field: "name", title: "Name", sortable: "name", show: true },
+          //{ field: "age", title: "Age", sortable: "age", show: true },
+          //{ field: "money", title: "Money", show: true }
+        ];
+
+        headers.forEach(function(header) {
+          $scope.cols.push({
+            field: header, 
+            title: header, 
+            sortable: header, 
+            show: true
+          });
+        });
+
+        var records = [];
+        results.forEach(function(row) {
+          var record = {};
+          for (var i = 0; i < row.length; i++) {
+            record[headers[i]] = row[i];
+          }
+          records.push(record);
+        });
+
+        var initialParams = {
+          page: 1, // show first page
+          count: $scope.widget.dataModelOptions.pageLength, // count per page
+          sorting: {}
+        };
+        initialParams.sorting[headers[0]] = 'desc';
+
+        var total = $scope.grid.total;
+
+        $scope.tableParams = new NgTableParams(initialParams, {
+          total: total,
+          getData: function($defer, params) {
+            console.log(params);
+            var orderedData = params.sorting() ? 
+                $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
+
+            orderedData = params.filter() ? 
+                $filter('filter')(orderedData, params.filter()) : orderedData;
+
+            // Set total for recalc pagination
+            //params.total(orderedData.length);
+
+            $defer.resolve(orderedData);
+          }
+        });
+      };
+
+      $scope.createComplexTable = function(headers, results) {
+        $scope.cols = [
+          //{ field: "name", title: "Name", sortable: "name", show: true },
+          //{ field: "age", title: "Age", sortable: "age", show: true },
+          //{ field: "money", title: "Money", show: true }
+        ];
+
+        headers.forEach(function(header) {
+          $scope.cols.push({
+            field: header, 
+            title: header, 
+            sortable: header, 
+            show: true
+          });
+        });
+
+        var records = [];
+        results.forEach(function(row) {
+          var record = {};
+          for (var i = 0; i < row.length; i++) {
+            record[headers[i]] = row[i];
+          }
+          records.push(record);
+        });
+
+        var initialParams = {
+          page: 1, // show first page
+          count: $scope.widget.dataModelOptions.pageLength, // count per page
+          sorting: {}
+        };
+        initialParams.sorting[headers[0]] = 'desc';
+
+        $scope.tableParams = new NgTableParams(initialParams, {
+          total: records.length, // Defines the total number of items for the table
+          getData: function($defer, params) {
+            var orderedData = params.sorting() ? 
+                $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
+
+            orderedData = params.filter() ? 
+                $filter('filter')(orderedData, params.filter()) : orderedData;
+
+            // Set total for recalc pagination
+            params.total(orderedData.length);
+
+            $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
         });
       };
@@ -516,12 +631,15 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         $scope.clearResults();
 
         var dimensions = $scope.widget.dataModelOptions.dimensions;
+        var headers = [];
+
         dimensions.forEach(function(dimension) {
           var key = Object.keys(dimension)[0];
           var name = dimension[key].field;
           var type = $scope.data.fields[name]['type'];
           var item = {name: name, type: type};
           $scope.executor.dimensions.push(item);
+          headers.push(name);
         });
 
         // We need two transforms: one for JSON, one for XML.
@@ -555,6 +673,8 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           });
 
           $scope.executor.disableDownload = false;
+
+          $scope.createSimpleTable(headers, $scope.executor.results);
         });
       };
 
@@ -735,7 +855,6 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
       $scope.contentUrl = mlReportService.getDirectiveTemplate($scope.widget.mode, 'ml-smart-grid');
 
       $scope.$watch('widget.mode', function(mode) {
-        console.log('widget.mode: ' + mode);
         //console.log($scope);
 
         $scope.clearResults();

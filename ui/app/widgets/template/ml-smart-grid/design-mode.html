@@ -86,7 +86,7 @@
       <tbody>
         <tr ng-repeat="result in model.results.results track by $index">
           <td ng-repeat="val in result track by $index">
-            <em ng-if="val === ''">empty</em>
+            <em ng-if="val === ''"></em>
             <span ng-if="val !== ''">{{ val }}</span>
           </td>
         </tr>
