@@ -8,6 +8,7 @@
  * Description: The uploader module
  */
 
+var Util = require('./utils.js');
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
@@ -124,7 +125,7 @@ var uploader = {
 
   removeAll: function(req, res, marklogic, dbconfig) {
     var directory = req.body['directory'];
-    var db = marklogic.createDatabaseClient(dbconfig.connection);
+    var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
 
     if (directory) {
       // Removes all documents

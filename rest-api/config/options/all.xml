@@ -109,14 +109,5 @@
     </range>
   </constraint>
   <!-- End Claim facets -->
-<!--
-  <constraint name="Report_Department">
-    <range type="xs:string" facet="true" collation="http://marklogic.com/collation/codepoint">
-      <facet-option>limit=5</facet-option>
-      <facet-option>frequency-order</facet-option>
-      <facet-option>descending</facet-option>
-      <json-property>department</json-property>
-    </range>
-  </constraint>
--->
+
 </options>

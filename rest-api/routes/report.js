@@ -8,6 +8,7 @@
  * Description: The report module
  */
 
+var Util = require('./utils.js');
 var async = require('async');
 var uuid = require('uuid');
 var csv = require('csv');
@@ -20,8 +21,8 @@ function getReportUri(id) {
 }
 
 // Retrieves a report
-function selectReport(pname, pvalue, data, callback, marklogic, dbconfig) {
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
+function selectReport(pname, pvalue, data, callback, marklogic, dbconfig, req) {
+  var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
   var qb = marklogic.queryBuilder;
   var criteria = {};
 
@@ -38,7 +39,7 @@ function selectReport(pname, pvalue, data, callback, marklogic, dbconfig) {
       report.uri = document.uri;
       report.name = document.content.name;
       report.description = document.content.description;
-      report.department = document.content.department;
+      report.classification = document.content.classification;
       report.widgets = document.content.widgets;
 
       data.report = report;
@@ -58,7 +59,7 @@ function createReport(req, res, data, callback, marklogic, dbconfig) {
   var id = uuid.v4();
   var name = req.body.name;
   var description = req.body.description;
-  var department = req.body.department;
+  var classification = req.body.classification;
 
   // This is the key for the report.
   var uri = getReportUri(id);
@@ -68,12 +69,12 @@ function createReport(req, res, data, callback, marklogic, dbconfig) {
         id: id,
         name: name,
         description: description,
-        department: department
+        classification: classification
       }
     }
   ];
 
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
+  var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
 
   db.documents.write(reportDoc).result( 
     function(response) {
@@ -91,7 +92,7 @@ function updateReport(req, res, callback, marklogic, dbconfig) {
   var uri = req.body.uri;
   var name = req.body.name;
   var description = req.body.description;
-  var department = req.body.department;
+  var classification = req.body.classification;
   var widgets = req.body.widgets;
 
   var reportDoc = [
@@ -99,13 +100,13 @@ function updateReport(req, res, callback, marklogic, dbconfig) {
       content: {
         name: name,
         description: description,
-        department: department,
+        classification: classification,
         widgets: widgets
       }
     }
   ];
 
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
+  var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
 
   db.documents.write(reportDoc).result( 
     function(response) {
@@ -118,10 +119,10 @@ function updateReport(req, res, callback, marklogic, dbconfig) {
 }
 
 // Processes search request
-function performSimpleSearch(params, res, marklogic, dbconfig) {
+function performSimpleSearch(params, req, res, marklogic, dbconfig) {
   var q = params['q'];
   var reports = [];
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
+  var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
   var qb = marklogic.queryBuilder;
   var query = null;
 
@@ -146,7 +147,7 @@ function performSimpleSearch(params, res, marklogic, dbconfig) {
       report.id = document.content.id;
       report.name = document.content.name;
       report.description  = document.content.description;
-      report.department = document.content.department;
+      report.classification = document.content.classification;
 
       reports.push(report);
     });
@@ -166,58 +167,6 @@ function performSimpleSearch(params, res, marklogic, dbconfig) {
   });
 }
 
-function generateChartData(params, res, marklogic, dbconfig) {
-  var directory = params['directory'];
-  var xaxis = params['xaxis'];
-  var yaxis = params['yaxis'];
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
-  var qb = marklogic.queryBuilder;
-
-//console.log(params);
-//console.log('directory: ' + directory);
-//console.log('xaxis: ' + xaxis);
-//console.log('yaxis: ' + yaxis);
-
-  db.documents.query(
-    qb.where(qb.directory('/' + directory + '/'))
-      .calculate(qb.facet(xaxis))
-      .withOptions({categories: 'none'})
-  ).result(function(results) {
-    //console.log(JSON.stringify(results, null, 2));
-    res.json({
-      success: true,
-      message: 'OK',
-      results: results
-    });
-  }, function(error) {
-    console.log(JSON.stringify(error, null, 2));
-    res.json({
-      success: false,
-      message: 'Failed to perform faceted search'
-    });
-  });
-/*
-  var vb = marklogic.valuesBuilder;
-  db.values.read(
-    vb.fromIndexes('cost')
-      .aggregates('sum')
-      .slice(0)
-  ).result(function(results) {
-    console.log(JSON.stringify(results, null, 2));
-  }, function(error) {
-    console.log(JSON.stringify(error, null, 2));
-  });
-
-  db.values.read(
-    vb.fromIndexes('department', 'cost')
-  ).result(function(result) {
-    console.log(JSON.stringify(result, null, 2));
-  }, function(error) {
-    console.log(JSON.stringify(error, null, 2));
-  });
-*/
-}
-
 exports.init = function(router, marklogic, dbconfig) {
 
   router.route('/report').post(function(req, res) {
@@ -227,7 +176,7 @@ exports.init = function(router, marklogic, dbconfig) {
     // We don't actually execute the async action here
     // We add functions containing it to an array of "tasks"
     asyncTasks.push(function(callback) {
-      selectReport('name', req.body.name, data, callback, marklogic, dbconfig);
+      selectReport('name', req.body.name, data, callback, marklogic, dbconfig, req);
     });
 
     asyncTasks.push(function(data1, callback) {
@@ -283,7 +232,7 @@ exports.init = function(router, marklogic, dbconfig) {
 
   router.route('/report/:uri').delete(function(req, res) {
     var uri = req.params.uri;
-    var db = marklogic.createDatabaseClient(dbconfig.connection);
+    var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
 
     // Removes a report document by uri
     db.documents.remove(uri).result(function(response) {
@@ -297,81 +246,11 @@ exports.init = function(router, marklogic, dbconfig) {
   });
 
   router.route('/reports').get(function(req, res) {
-    performSimpleSearch(req.params, res, marklogic, dbconfig);
+    performSimpleSearch(req.params, req, res, marklogic, dbconfig);
   });
 
   router.route('/reports').post(function(req, res) {
-    performSimpleSearch(req.body, res, marklogic, dbconfig);
-  });
-
-  router.route('/smartchart').post(function(req, res) {
-    generateChartData(req.body, res, marklogic, dbconfig);
-  });
-
-  router.route('/metadata/:directory').get(function(req, res) {
-    var directory = req.params.directory;;
-
-    if (directory === 'claim') {
-      res.json({
-        success: true,
-        message: 'OK',
-        directory: directory,
-        transform: 'smart-filter',
-        properties: [{
-          name: 'DESYNPUF_ID',
-          type: 'string',
-          classification: 'element',
-          ns: ''
-        },{
-          name: 'CLM_PMT_AMT',
-          type: 'number',
-          classification: 'element',
-          ns: ''
-        },{
-          name: 'NCH_PRMRY_PYR_CLM_PD_AMT',
-          type: 'number',
-          classification: 'element',
-          ns: ''
-        },{
-          name: 'NCH_BENE_IP_DDCTBL_AMT',
-          type: 'number',
-          classification: 'element',
-          ns: ''
-        },{
-          name: 'CLM_UTLZTN_DAY_CNT',
-          type: 'number',
-          classification: 'element',
-          ns: ''
-        }]
-      });
-    } else if (directory === 'report') {
-      res.json({
-        success: true,
-        message: 'OK',
-        directory: directory,
-        transform: 'smart-filter',
-        properties: [{
-          name: 'name',
-          type: 'string',
-          classification: 'json-property'
-        },{
-          name: 'description',
-          type: 'string',
-          classification: 'json-property'
-        },{
-          name: 'department',
-          type: 'string',
-          classification: 'json-property'
-        }]
-      });
-    } else {
-        res.json({
-        success: true,
-        message: 'OK',
-        directory: directory,
-        properties: []
-      });
-    }
+    performSimpleSearch(req.body, req, res, marklogic, dbconfig);
   });
 
   // Prepare a report for download

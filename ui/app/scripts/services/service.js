@@ -103,8 +103,8 @@ angular.module('app.service').service('ReportService', ['$http', '$q', 'MLRest',
   };
 }]);
 
-angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel', 'SmartChartDataModel', 
-  function(SmartGridDataModel, SmartChartDataModel) {
+angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel',  
+  function(SmartGridDataModel) {
   return [
     {
       name: 'Query Builder',
@@ -175,28 +175,6 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
       },
       templateUrl: 'template/percentage.html'
     },
-/*
-    {
-      name: 'Smart Chart',
-      directive: 'ml-smart-chart',
-      title: 'Smart Chart',
-      icon: 'fa fa-th',
-      attrs: {
-        charttype: 'bar'
-      },
-      dataAttrName: 'chart',
-      dataModelType: SmartChartDataModel,
-      dataModelOptions: {
-        directory: '',
-        xaxis: 'department',
-        yaxis: 'profit',
-        chart: 'column'
-      },
-      style: {
-        width: '100%'
-      }
-    },
-*/
     {
       name: 'Canvas Chart' ,
       directive: 'ml-canvas-chart',

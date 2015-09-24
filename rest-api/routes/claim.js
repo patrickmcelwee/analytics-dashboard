@@ -8,12 +8,14 @@
  * Description: The claim module
  */
 
+var Util = require('./utils.js');
+
 var CLAIM_DIRECTORY = '/claim/';
 
-function performSimpleSearch(params, res, marklogic, dbconfig) {
+function performSimpleSearch(params, req, res, marklogic, dbconfig) {
   var q = params['q'];
   var claims = [];
-  var db = marklogic.createDatabaseClient(dbconfig.connection);
+  var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
   var qb = marklogic.queryBuilder;
   var query = null;
 
@@ -58,7 +60,7 @@ exports.init = function(router, marklogic, dbconfig) {
 
   router.route('/claim').delete(function(req, res) {
     var uri = req.body['uri'];
-    var db = marklogic.createDatabaseClient(dbconfig.connection);
+    var db = marklogic.createDatabaseClient(Util.getConnection(dbconfig, req));
 
     if (uri) {
       // Removes a claim document by uri
@@ -83,11 +85,11 @@ exports.init = function(router, marklogic, dbconfig) {
   });
 
   router.route('/claims').get(function(req, res) {
-    performSimpleSearch(req.params, res, marklogic, dbconfig);
+    performSimpleSearch(req.params, req, res, marklogic, dbconfig);
   });
 
   router.route('/claims').post(function(req, res) {
-    performSimpleSearch(req.body, res, marklogic, dbconfig);
+    performSimpleSearch(req.body, req, res, marklogic, dbconfig);
   });
 
 };

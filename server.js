@@ -234,8 +234,8 @@ exports.buildExpress = function(options) {
     connection: {
       host: options.mlHost,
       port: options.mlPort,
-      user: options.mlUser,
-      password: options.mlPassword
+      user: null,
+      password: null
     }
   };
   var report = require('./rest-api/routes/report.js');
