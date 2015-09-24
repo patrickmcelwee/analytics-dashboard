@@ -162,7 +162,6 @@ var uploader = {
           //console.log(data);
 
           jobj.importer.filetype = 'csv';
-          jobj.importer.directory = '';
           jobj.importer.element = '';
 
           var fields = data[0];
@@ -187,8 +186,6 @@ var uploader = {
             jobj.importer.filetype = 'xml';
 
             var directory = Object.keys(result)[0];
-            jobj.importer.directory = '/' + directory + '/';
-
             var value = result[directory];
             jobj.importer.element = Object.keys(value)[0];
 
@@ -211,6 +208,8 @@ var uploader = {
   load: function(req, res, current_dir, options) {
     var filename = req.body['filename'];
     var filepath = req.body['filepath'];
+    var elementName = req.body['element'];
+    var directory = '/' + elementName + '/';
     var mlcp = (process.platform === 'win32') ? 'mlcp.bat' : 'mlcp.sh';
     var cmd = mlcp + 
                   ' import -mode local -host ' + options.mlHost + 
@@ -218,18 +217,18 @@ var uploader = {
                   ' -username ' + req.session.user.name +
                   ' -password ' + req.session.user.password +
                   ' -input_file_path ' + filepath + 
-                  ' -output_uri_prefix ' + req.body['directory'] + 
+                  ' -output_uri_prefix ' + directory + 
                   ' -output_uri_suffix .xml';
 
     var isCsvFile = endsWith(filename, '.csv');
     if (isCsvFile || endsWith(filename, '.xml')) {
       if (isCsvFile) {
         cmd += ' -input_file_type delimited_text ' + 
-               ' -delimited_root_name ' + req.body['element'] +
+               ' -delimited_root_name ' + elementName +
                ' -delimited_uri_id ' + req.body['uri_id'];
       } else {
         cmd += ' -input_file_type aggregates ' + 
-               ' -aggregate_record_element ' + req.body['element'] +
+               ' -aggregate_record_element ' + elementName +
                ' -aggregate_uri_id ' + req.body['uri_id'];
       }
     } else {

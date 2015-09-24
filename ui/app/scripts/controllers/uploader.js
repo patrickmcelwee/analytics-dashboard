@@ -11,7 +11,6 @@ angular.module('app').controller('UploaderCtrl', ['$scope', '$http', '$sce', 'Us
     $scope.uploader.filesize = '';
 
     $scope.importer = {};
-    $scope.importer.directory = '';
     $scope.importer.element = '';
     $scope.importer.uri_id = '';
     $scope.importer.fields = [];
