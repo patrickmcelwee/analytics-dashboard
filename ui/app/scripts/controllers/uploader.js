@@ -196,6 +196,3 @@ angular.module('app').controller('UploaderCtrl', ['$scope', '$http', '$sce', 'Us
     };
 
 }]);
-
-//Please confirm that you want to remove the range element index:
-//[string] :eyeColor
