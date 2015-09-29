@@ -16,8 +16,10 @@ The following softwares are required before you can install and run the applicat
 - python 3.4.3
 - node v0.12.7 64 bit
 - MarkLogic 8
-- gulp - npm install --global gulp
-- bower - npm install --global bower
+- npm install --global gulp # This command will install gulp
+- npm install --global bower # This command will install bower
+- npm install --global slush # This command will install slush
+- npm install --global slush-marklogic-node # This command will install bower
 
 # Cloning the application on your computer
 
