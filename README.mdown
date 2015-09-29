@@ -23,13 +23,14 @@ The following softwares are required before you can install and run the applicat
 
 # Cloning the application on your computer
 
-- Open a command prompt.
+- Open a command window.
 - Change the current working directory to the location where you want the cloned application to be made.
 - Run ```git clone https://github.com/jianmin/analytics-dashboard.git```
 - The application will be cloned in the analytics-dashboard directory.
 
 # Configuring the application
 
+Open a command window and go to the analytics-dashboard directory, then perform the following actions:
 - `ml local bootstrap`
 - `ml local deploy modules`
 - `mlpm deploy -H localhost -P 8040 -u admin -p admin` # replace admin with your admin's password
