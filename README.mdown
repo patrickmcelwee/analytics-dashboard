@@ -20,6 +20,7 @@ The following softwares are required before you can install and run the applicat
 - npm install --global bower # This command will install bower
 - npm install --global slush # This command will install slush
 - npm install --global slush-marklogic-node # This command will install bower
+- mlcp - follow the instructions in https://docs.marklogic.com/guide/ingestion/content-pump. After installation, put the mlcp command in the PATH env
 
 # Cloning the application on your computer
 
