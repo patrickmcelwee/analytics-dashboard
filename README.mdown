@@ -28,14 +28,14 @@ The following softwares are required before you can install and run the applicat
 
 # Configuring the application
 
-- `$ ./ml local bootstrap`
-- `$ ./ml local deploy modules`
-- `$ ./ml local deploy content` # this uploads a dictionary for spell-suggestions
+- `ml local bootstrap`
+- `ml local deploy modules`
+- `mlpm deploy -H localhost -P 8040 -u admin -p admin` # replace admin with your admin's password
 - edit gulpfile.js. In the options section near the top, set your desired ports
 
 # Running the application
 
-- `$ gulp` # this will watch the .less file for changes and compile them to .css and runs the node server
+- `gulp` # this will watch the .less file for changes and compile them to .css and runs the node server
 
 # Data
 ## Sample Data
