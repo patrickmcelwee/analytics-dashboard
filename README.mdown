@@ -46,10 +46,13 @@ Execute the following command to install bower:
 
 ```npm install --global bower```
 
+## MarkLogic package manager
+Execute the following command to install the package manager:
 
-- npm install --global bower # This command will install bower
-- npm install --global mlpm # This command will install MarkLogic package manager
-- mlcp - follow the instructions in https://docs.marklogic.com/guide/ingestion/content-pump. After installation, put the mlcp command in the PATH env
+```npm install --global mlpm```
+
+## mlcp
+Follow the instructions in https://docs.marklogic.com/guide/ingestion/content-pump. After installation, put the mlcp command in the PATH env
 
 # Cloning the application on your computer
 
