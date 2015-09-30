@@ -43,4 +43,6 @@ Then open a command window and go to the analytics-dashboard directory, then per
 
 # Running the application
 
-- `gulp` # this will watch the .less file for changes and compile them to .css and runs the node server
+- `gulp server` # this will run the node server
+
+Open a web browser and go to http://localhost:9070/, login the application using your username and password.
