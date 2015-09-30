@@ -36,7 +36,17 @@ http://developer.marklogic.com/free-developer
 
 The recommended version is 8.
 
-- npm install --global gulp # This command will install gulp
+## gulp
+Execute the following command to install gulp:
+
+```npm install --global gulp```
+
+## bower
+Execute the following command to install bower:
+
+```npm install --global bower```
+
+
 - npm install --global bower # This command will install bower
 - npm install --global mlpm # This command will install MarkLogic package manager
 - mlcp - follow the instructions in https://docs.marklogic.com/guide/ingestion/content-pump. After installation, put the mlcp command in the PATH env
