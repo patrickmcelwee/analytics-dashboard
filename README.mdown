@@ -18,6 +18,13 @@ The following softwares are required before you can install and run the applicat
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 ## ruby
+https://www.ruby-lang.org/en/
+
+## python
+
+## node
+
+## MarkLogic
 
 - git v1.9.5
 - ruby v2.2.2 64 bit
