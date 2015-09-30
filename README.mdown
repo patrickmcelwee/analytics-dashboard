@@ -23,6 +23,7 @@ The recommended version is v2.2.2 (64 bit) or higher.
 
 ## python
 https://www.python.org/
+
 The recommended version is 3.4.3 or higher.
 
 ## node
@@ -31,6 +32,8 @@ https://nodejs.org/en/
 The recommended version is v0.12.7 (64 bit) or higher.
 
 ## MarkLogic
+http://developer.marklogic.com/free-developer
+
 The recommended version is 8.
 
 - npm install --global gulp # This command will install gulp
