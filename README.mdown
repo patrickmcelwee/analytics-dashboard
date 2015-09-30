@@ -33,7 +33,9 @@ The following softwares are required before you can install and run the applicat
 
 # Configuring the application
 
-Open a command window and go to the analytics-dashboard directory, then perform the following actions:
+First, open deploy/build.properties file, make sure user and password match the database's settings (substitute the user and password properties with your own).
+
+Then open a command window and go to the analytics-dashboard directory, then perform the following actions:
 - `ml local bootstrap`
 - `ml local deploy modules`
 - `mlpm deploy -H localhost -P 8040 -u admin -p admin` # replace admin with your admin's password
