@@ -44,4 +44,4 @@ Once the settings are correct, open a command window and go to the analytics-das
 
 - `gulp server` # this will run the node server
 
-Open a web browser and go to http://localhost:9070/ (9070 is the default port of your node server), login the application using your username and password.
+Open a web browser and go to http://localhost:9070/ (9070 is the default port of your node server), login with your admin credentials.
