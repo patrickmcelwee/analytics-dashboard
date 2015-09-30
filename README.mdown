@@ -20,8 +20,7 @@ The following softwares are required before you can install and run the applicat
 - MarkLogic 8
 - npm install --global gulp # This command will install gulp
 - npm install --global bower # This command will install bower
-- npm install --global slush # This command will install slush
-- npm install --global slush-marklogic-node # This command will install bower
+- npm install --global mlpm # This command will install MarkLogic package manager
 - mlcp - follow the instructions in https://docs.marklogic.com/guide/ingestion/content-pump. After installation, put the mlcp command in the PATH env
 
 # Cloning the application on your computer
