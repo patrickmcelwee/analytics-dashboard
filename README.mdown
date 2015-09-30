@@ -38,7 +38,7 @@ First check the default configuration in deploy/build.properties file; if any se
 Once the settings are correct, open a command window and go to the analytics-dashboard directory, then perform the following actions:
 - `ml local bootstrap`
 - `ml local deploy modules`
-- `mlpm deploy -H localhost -P 8040 -u admin -p admin` # replace admin with your admin's password
+- `mlpm deploy -H localhost -P 8040 -u admin -p admin` # replace credentials with your own
 - edit gulpfile.js. In the options section near the top, set your desired ports
 
 # Running the application
