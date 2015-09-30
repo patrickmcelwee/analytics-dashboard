@@ -19,21 +19,20 @@ https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 ## ruby
 https://www.ruby-lang.org/en/
 
-The recommended version is v2.2.2 (64 bit).
+The recommended version is v2.2.2 (64 bit) or higher.
 
 ## python
-The recommended version is 3.4.3.
+https://www.python.org/
+The recommended version is 3.4.3 or higher.
 
 ## node
-The recommended version is v0.12.7 (64 bit).
+https://nodejs.org/en/
+
+The recommended version is v0.12.7 (64 bit) or higher.
 
 ## MarkLogic
+The recommended version is 8.
 
-- git v1.9.5
-- ruby v2.2.2 64 bit
-- python 3.4.3
-- node v0.12.7 64 bit
-- MarkLogic 8
 - npm install --global gulp # This command will install gulp
 - npm install --global bower # This command will install bower
 - npm install --global mlpm # This command will install MarkLogic package manager
