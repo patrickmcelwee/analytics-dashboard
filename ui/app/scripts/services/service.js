@@ -120,7 +120,8 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         query: {},
         dimensions: [],
         chart: 'column',
-        pageLength: 10
+        pageLength: 10,
+        parameters: []
       },
       style: {
         width: '100%'
@@ -135,6 +136,7 @@ angular.module('app.service').factory('WidgetDefinitions', ['SmartGridDataModel'
         widget.title = result.title;
         widget.dataModelOptions.pageLength = result.dataModelOptions.pageLength;
         widget.dataModelOptions.chart = result.dataModelOptions.chart;
+        angular.copy(result.dataModelOptions.parameters, widget.dataModelOptions.parameters);
       },
       onSettingsDismiss: function(reason, scope) {
         // Do nothing here, since the user pressed cancel

@@ -85,6 +85,7 @@
       return {
         scope: {
           sqFields: '=',
+          sqParameters: '=',
           item: '=sqBuilderChooser',
           onRemove: '&',
         },
@@ -116,6 +117,7 @@
       return {
         scope: {
           sqFields: '=',
+          sqParameters: '=',
           group: '=sqBuilderGroup',
           onRemove: '&',
         },
@@ -156,6 +158,7 @@
       return {
         scope: {
           sqFields: '=',
+          sqParameters: '=',
           rule: '=sqBuilderRule',
           onRemove: '&',
         },
@@ -185,6 +188,7 @@
           type: '=sqType',
           rule: '=',
           guide: '=',
+          parameters: '=',
         },
 
         template: '<ng-include src="getTemplateUrl()" />',
@@ -506,7 +510,7 @@
       "  </div>" +
       "  <div class=\"filter-panels\">" + 
       "    <div class=\"list-group form-inline\">" + 
-      "      <div data-ng-repeat=\"filter in filters\" data-sq-builder-chooser=\"filter\" data-sq-fields=\"data.fields\" data-on-remove=\"removeChild($index)\" data-depth=\"0\"></div>" + 
+      "      <div data-ng-repeat=\"filter in filters\" data-sq-builder-chooser=\"filter\" data-sq-fields=\"data.fields\" data-sq-parameters=\"data.parameters\" data-on-remove=\"removeChild($index)\" data-depth=\"0\"></div>" + 
       "      <div class=\"list-group-item actions\">" +
       "        <a class=\"btn btn-xs btn-primary\" title=\"Add Rule\" data-ng-click=\"addRule()\">" + 
       "          <i class=\"fa fa-plus\"> Add Rule</i>" + 
@@ -521,8 +525,8 @@
 
     $templateCache.put("ml-sq-builder/ChooserDirective.html",
       "<div class=\"list-group-item sq-builder-chooser\" data-ng-class=\"getGroupClassName()\">" + 
-      "  <div data-ng-if=\"item.type === \'group\'\" data-sq-builder-group=\"item\" data-depth=\"{{ depth }}\" data-sq-fields=\"sqFields\" data-on-remove=\"onRemove()\"></div>" + 
-      "  <div data-ng-if=\"item.type !== \'group\'\" data-sq-builder-rule=\"item\" data-sq-fields=\"sqFields\" data-on-remove=\"onRemove()\"></div>" + 
+      "  <div data-ng-if=\"item.type === \'group\'\" data-sq-builder-group=\"item\" data-depth=\"{{ depth }}\" data-sq-fields=\"sqFields\" data-sq-parameters=\"sqParameters\" data-on-remove=\"onRemove()\"></div>" + 
+      "  <div data-ng-if=\"item.type !== \'group\'\" data-sq-builder-rule=\"item\" data-sq-fields=\"sqFields\" data-sq-parameters=\"sqParameters\" data-on-remove=\"onRemove()\"></div>" + 
       "</div>");
 
     $templateCache.put("ml-sq-builder/GroupDirective.html",
@@ -534,7 +538,7 @@
       "    </select>" + 
       "    of these conditions are met" + 
       "  </h5>" + 
-      "  <div data-ng-repeat=\"rule in group.rules\" data-sq-builder-chooser=\"rule\" data-sq-fields=\"sqFields\" data-depth=\"{{ +depth + 1 }}\" data-on-remove=\"removeChild($index)\"></div>" + 
+      "  <div data-ng-repeat=\"rule in group.rules\" data-sq-builder-chooser=\"rule\" data-sq-fields=\"sqFields\" data-sq-parameters=\"sqParameters\" data-depth=\"{{ +depth + 1 }}\" data-on-remove=\"removeChild($index)\"></div>" + 
       "  <div class=\"list-group-item actions\" data-ng-class=\"getGroupClassName()\">" + 
       "    <a class=\"btn btn-xs btn-primary\" title=\"Add Sub-Rule\" data-ng-click=\"addRule()\">" + 
       "      <i class=\"fa fa-plus\"> Add Rule</i>" + 
@@ -551,7 +555,7 @@
     $templateCache.put("ml-sq-builder/RuleDirective.html",
       "<div class=\"sq-builder-rule\">" + 
       "  <select class=\"form-control\" data-ng-model=\"rule.field\" data-ng-options=\"key as key for (key, value) in sqFields\"></select>" + 
-      "  <span data-sq-type=\"getType()\" data-rule=\"rule\" data-guide=\"sqFields[rule.field]\"></span>" + 
+      "  <span data-sq-type=\"getType()\" data-rule=\"rule\" data-guide=\"sqFields[rule.field]\" data-parameters=\"sqParameters\"></span>" + 
       "  <a class=\"btn btn-xs btn-danger remover\" data-ng-click=\"onRemove()\">" + 
       "    <i class=\"fa fa-minus\"></i>" + 
       "  </a>" + 
@@ -566,6 +570,9 @@
       "    </optgroup>" + 
       "  </select>" + 
       "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"text\" />" + 
+      "  <select class=\"form-control\" ng-model=\"rule.value\">" + 
+      "    <option ng-repeat=\"parameter in parameters\" value=\"#{{parameter.name}}#\">{{parameter.name}}</option>" + 
+      "  </select>" + 
       "</span>");
 
     $templateCache.put("ml-sq-builder/types/Int.html",
@@ -580,7 +587,10 @@
       "      <option value=\"LE\">&le;</option>" + 
       "    </optgroup>" + 
       "  </select>" + 
-      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"number\" min=\"{{ guide.minimum }}\" max=\"{{ guide.maximum }}\" />" + 
+      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"text\" />" + 
+      "  <select class=\"form-control\" ng-model=\"rule.value\">" + 
+      "    <option ng-repeat=\"parameter in parameters\" value=\"#{{parameter.name}}#\">{{parameter.name}}</option>" + 
+      "  </select>" + 
       "</span>");
 
     $templateCache.put("ml-sq-builder/types/Long.html",
@@ -595,7 +605,10 @@
       "      <option value=\"LE\">&le;</option>" + 
       "    </optgroup>" + 
       "  </select>" + 
-      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"number\" min=\"{{ guide.minimum }}\" max=\"{{ guide.maximum }}\" />" + 
+      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"text\" />" + 
+      "  <select class=\"form-control\" ng-model=\"rule.value\">" + 
+      "    <option ng-repeat=\"parameter in parameters\" value=\"#{{parameter.name}}#\">{{parameter.name}}</option>" + 
+      "  </select>" + 
       "</span>");
 
     $templateCache.put("ml-sq-builder/types/Decimal.html",
@@ -610,7 +623,10 @@
       "      <option value=\"LE\">&le;</option>" + 
       "    </optgroup>" + 
       "  </select>" + 
-      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"number\" min=\"{{ guide.minimum }}\" max=\"{{ guide.maximum }}\" />" + 
+      "  <input data-ng-if=\"inputNeeded()\" class=\"form-control\" data-ng-model=\"rule.value\" type=\"text\" />" + 
+      "  <select class=\"form-control\" ng-model=\"rule.value\">" + 
+      "    <option ng-repeat=\"parameter in parameters\" value=\"#{{parameter.name}}#\">{{parameter.name}}</option>" + 
+      "  </select>" + 
       "</span>");
 
     $templateCache.put("ml-sq-builder/types/Boolean.html",

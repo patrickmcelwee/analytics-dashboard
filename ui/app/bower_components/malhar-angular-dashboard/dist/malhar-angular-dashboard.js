@@ -871,6 +871,20 @@ angular.module('ui.dashboard')
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
+
+    // Add parameter
+    $scope.addParameter = function () {
+      var inserted = {
+        name: '',
+        value: ''
+      };
+      $scope.result.dataModelOptions.parameters.push(inserted);
+    };
+
+    // Delete parameter
+    $scope.deleteParameter = function(index) {
+      $scope.result.dataModelOptions.parameters.splice(index, 1);
+    };
   }]);
 /*
  * Copyright (c) 2014 DataTorrent, Inc. ALL Rights Reserved.

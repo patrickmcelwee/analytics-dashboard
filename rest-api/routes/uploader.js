@@ -210,7 +210,7 @@ var uploader = {
     var filepath = req.body['filepath'];
     var elementName = req.body['element'];
     var directory = '/' + elementName + '/';
-    var mlcp = (process.platform === 'win32') ? 'mlcp.bat' : 'mlcp.sh';
+    var mlcp = (process.platform === 'win32') ? 'mlcp.bat' : '/usr/local/mlcp/bin/mlcp.sh';
     var cmd = mlcp + 
                   ' import -mode local -host ' + options.mlHost + 
                   ' -port ' + options.mlPort +

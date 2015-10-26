@@ -22,6 +22,14 @@ angular.module('app').controller('ReportsCtrl', ['$scope', '$filter', '$location
     }
   });
 
+  $scope.setOption = function(option) {
+    $scope.report.privacy = option;
+  };
+
+  $scope.isActive = function(option) {
+    return option === $scope.report.privacy;
+  };
+
   $scope.getReports = function() {
     $scope.showLoading = true;
     ReportService.getReports().then(function(response) {

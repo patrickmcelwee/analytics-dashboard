@@ -25,7 +25,8 @@
     serverScript: args['server-script'] || './server.js',
     appPort: args['app-port'] || 9040,
     mlHost: args['ml-host'] || 'localhost',
-    mlPort: args['ml-port'] || 8040
+    mlPort: args['ml-port'] || 8040,
+    database: 'analytics-dashboard-content'
   };
   
   console.log('server-script: ' + options.serverScript);

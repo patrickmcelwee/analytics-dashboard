@@ -5,7 +5,16 @@ angular.module('app').controller('ReportCtrl', ['$scope', '$location', '$rootSco
 
   $scope.user = user;
   $scope.report = {};
- 
+  $scope.report.privacy = 'public';
+
+  $scope.setOption = function(option) {
+    $scope.report.privacy = option;
+  };
+
+  $scope.isActive = function(option) {
+    return option === $scope.report.privacy;
+  };
+
   $scope.createReport = function() {
     if ($scope.newReportForm.$valid) {
       MarkLogic.Util.showLoader();

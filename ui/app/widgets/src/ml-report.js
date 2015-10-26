@@ -118,6 +118,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
       $scope.data.needsRefresh = true;
       $scope.data.directory = $scope.widget.dataModelOptions.directory;
       $scope.data.directory_model = null;
+      $scope.data.parameters = $scope.widget.dataModelOptions.parameters;
 
       $scope.executor = {};
       $scope.executor.transform = 'smart-filter';
@@ -492,8 +493,6 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
       };
 
       $scope.createSimpleTable = function(headers, results) {
-console.log(headers);
-console.log(results);
         $scope.cols = [
           //{ field: "name", title: "Name", sortable: "name", show: true },
           //{ field: "age", title: "Age", sortable: "age", show: true },
@@ -601,6 +600,35 @@ console.log(results);
         $scope.executeSimpleQuery(start);
       };
 
+      function getParameterValue(name) {
+        var parameters = $scope.widget.dataModelOptions.parameters;
+
+        for (var i = 0; i < parameters.length; i++) {
+          var parameter = parameters[i];
+          var temp = '#' + parameter.name + '#';
+          if (name === temp)
+            return parameter.value;
+        }
+
+        return null;
+      }
+
+      function setQueryParameters(query) {
+        var type = typeof query;
+
+        if (type == 'object') {
+          for (var key in query) {
+            if (key === 'text' || key === 'value') {
+              var value = getParameterValue(query[key]);
+              if (value !== null)
+                query[key] = value;
+            } else {
+              setQueryParameters(query[key]);
+            }
+          }
+        }
+      }
+
       $scope.executeSimpleQuery = function(start) {
         var directory = '/' + $scope.widget.dataModelOptions.directory + '/';
         var queries = $scope.widget.dataModelOptions.query.query.queries;
@@ -614,6 +642,8 @@ console.log(results);
             }
           }
         };
+
+        setQueryParameters(queries);
 
         if ($scope.widget.mode === 'View' && $scope.executor.simple) {
           search['search']['qtext'] = $scope.executor.simple;

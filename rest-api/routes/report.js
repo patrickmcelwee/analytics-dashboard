@@ -40,6 +40,7 @@ function selectReport(pname, pvalue, data, callback, marklogic, dbconfig, req) {
       report.name = document.content.name;
       report.description = document.content.description;
       report.classification = document.content.classification;
+      report.privacy = document.content.privacy;
       report.widgets = document.content.widgets;
 
       data.report = report;
@@ -60,6 +61,7 @@ function createReport(req, res, data, callback, marklogic, dbconfig) {
   var name = req.body.name;
   var description = req.body.description;
   var classification = req.body.classification;
+  var privacy = req.body.privacy;
 
   // This is the key for the report.
   var uri = getReportUri(id);
@@ -69,7 +71,8 @@ function createReport(req, res, data, callback, marklogic, dbconfig) {
         id: id,
         name: name,
         description: description,
-        classification: classification
+        classification: classification,
+        privacy: privacy
       }
     }
   ];
@@ -93,6 +96,7 @@ function updateReport(req, res, callback, marklogic, dbconfig) {
   var name = req.body.name;
   var description = req.body.description;
   var classification = req.body.classification;
+  var privacy = req.body.privacy;
   var widgets = req.body.widgets;
 
   var reportDoc = [
@@ -101,6 +105,7 @@ function updateReport(req, res, callback, marklogic, dbconfig) {
         name: name,
         description: description,
         classification: classification,
+        privacy: privacy,
         widgets: widgets
       }
     }
@@ -148,6 +153,7 @@ function performSimpleSearch(params, req, res, marklogic, dbconfig) {
       report.name = document.content.name;
       report.description  = document.content.description;
       report.classification = document.content.classification;
+      report.privacy = document.content.privacy;
 
       reports.push(report);
     });
