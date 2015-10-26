@@ -399,6 +399,35 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         return null;
       };
 
+      function getParameterValue(name) {
+        var parameters = $scope.widget.dataModelOptions.parameters;
+
+        for (var i = 0; i < parameters.length; i++) {
+          var parameter = parameters[i];
+          var temp = '#' + parameter.name + '#';
+          if (name === temp)
+            return parameter.value;
+        }
+
+        return null;
+      }
+
+      function setQueryParameters(query) {
+        var type = typeof query;
+
+        if (type == 'object') {
+          for (var key in query) {
+            if (key === 'text' || key === 'value') {
+              var value = getParameterValue(query[key]);
+              if (value !== null)
+                query[key] = value;
+            } else {
+              setQueryParameters(query[key]);
+            }
+          }
+        }
+      }
+
       $scope.executeComplexQuery = function(count) {
         var queries = $scope.widget.dataModelOptions.query.query.queries;
         if (queries.length === 1) {
@@ -411,6 +440,8 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
           if (firstElement[key]['queries'].length === 0)
             queries = [];
         }
+
+        setQueryParameters(queries);
 
         var search = {
           'search': {
@@ -600,38 +631,12 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         $scope.executeSimpleQuery(start);
       };
 
-      function getParameterValue(name) {
-        var parameters = $scope.widget.dataModelOptions.parameters;
-
-        for (var i = 0; i < parameters.length; i++) {
-          var parameter = parameters[i];
-          var temp = '#' + parameter.name + '#';
-          if (name === temp)
-            return parameter.value;
-        }
-
-        return null;
-      }
-
-      function setQueryParameters(query) {
-        var type = typeof query;
-
-        if (type == 'object') {
-          for (var key in query) {
-            if (key === 'text' || key === 'value') {
-              var value = getParameterValue(query[key]);
-              if (value !== null)
-                query[key] = value;
-            } else {
-              setQueryParameters(query[key]);
-            }
-          }
-        }
-      }
-
       $scope.executeSimpleQuery = function(start) {
         var directory = '/' + $scope.widget.dataModelOptions.directory + '/';
         var queries = $scope.widget.dataModelOptions.query.query.queries;
+
+        setQueryParameters(queries);
+
         var search = {
           'search': {
             'options': {
@@ -642,8 +647,6 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
             }
           }
         };
-
-        setQueryParameters(queries);
 
         if ($scope.widget.mode === 'View' && $scope.executor.simple) {
           search['search']['qtext'] = $scope.executor.simple;
