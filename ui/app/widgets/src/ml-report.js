@@ -68,6 +68,47 @@
 
 })(window.angular);
 
+  function setModalMaxHeight(element) {
+    var ele = $(element);
+    var dialogMargin  = $(window).width() > 767 ? 62 : 22;
+    var contentHeight = $(window).height() - dialogMargin;
+    var headerHeight  = ele.find('.modal-header').outerHeight() || 2;
+    var footerHeight  = ele.find('.modal-footer').outerHeight() || 2;
+    var maxHeight     = contentHeight - (headerHeight + footerHeight);
+
+    ele.find('.modal-content').css({
+      'overflow': 'hidden'
+    });
+
+    ele.find('.modal-body').css({
+      'max-height': maxHeight,
+      'overflow-y': 'auto'
+    });
+
+    ele.find('#query-editor').css({
+      'height': maxHeight-220
+    });
+  }
+
+  var modalCallbackRegistered = false;
+
+  function registerModalCallback() {
+    if (modalCallbackRegistered) return;
+
+    $('.modal').on('show.bs.modal', function() {
+      $(this).show();
+      setModalMaxHeight(this);
+    });
+
+    modalCallbackRegistered = true;
+  }
+
+  $(window).resize(function() {
+    if ($('.modal.in').length != 0) {
+      setModalMaxHeight($('.modal.in'));
+    }
+  });
+
 angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlReportService', 'NgTableParams',
   function($compile, mlRest, mlReportService, NgTableParams) {
 
@@ -314,13 +355,30 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         }
       };
 
+      $scope.edit = function() {
+        registerModalCallback();
+        $('#query-editor-dialog').modal({'backdrop': 'static'});
+
+        var value = $scope.showQuery();
+        var container = document.getElementById('query-editor');
+        container.innerHTML = '';
+
+        var cme = CodeMirror(container, {
+          value: value,
+          indentUnit: 2,
+          lineNumbers: true,
+          readOnly: false,
+          matchBrackets: true,
+          autoCloseBrackets: true,
+          mode: 'application/ld+json',
+          lineWrapping: false
+        });
+      };
+
       $scope.save = function() {
         $scope.widget.dataModelOptions.database = $scope.model.config['current-database'];
         $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
         $scope.widget.dataModelOptions.directory = $scope.data.directory_model.id;
-
-//console.log($scope.model.config['current-database']);
-//console.log($scope.model.groupingStrategy);
 
         $scope.widget.dataModelOptions.query = {};
         $scope.widget.dataModelOptions.dimensions = [];
