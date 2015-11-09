@@ -257,6 +257,14 @@ exports.buildExpress = function(options) {
     uploader.removeAll(req, res, marklogic, dbconfig);
   });
 
+  var database = require('./rest-api/routes/database.js');
+  app.get('/api/database/properties', function(req, res, next) {
+    database.getProperties(req, res, current_dir, options);
+  });
+  app.post('/api/database/properties', function(req, res, next) {
+    database.updateProperties(req, res, current_dir, options);
+  });
+
   function handleApiAuth(req, res, next) {
     if (req.session.user === undefined) {
       res.send('{"authenticated": false}');

@@ -41,6 +41,10 @@ angular.module('app', [
         controller: 'SearchCtrl',
         reloadOnSearch: false
       })
+      .when('/indexes', {
+        templateUrl: 'views/indexes.html',
+        controller: 'IndexesCtrl'
+      })
       .when('/query-options', {
         templateUrl: 'views/query-options.html',
         controller: 'QueryOptionsCtrl'

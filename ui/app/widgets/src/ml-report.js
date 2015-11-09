@@ -269,9 +269,20 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
               var indexes = docs[key];
 
               indexes.forEach(function(index) {
+                // Set classification
+                var classification = 'element';
+
+                if (index['localname']) {
+                  classification = 'element';
+                } else if (index['path-expression']) {
+                  classification = 'path-expression';
+                } else {
+                  // TO DO
+                }
+
                 var field = {
                   type: index['scalar-type'],
-                  classification: 'element',
+                  classification: classification,
                   ns: index['namespace-uri']
                 };
                 var collation = index['collation'];
@@ -279,7 +290,14 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
                 if (collation) {
                   field.collation = collation;
                 }
-                doc.fields[index['localname']] = field;
+
+                if (index['localname']) {
+                  doc.fields[index['localname']] = field;
+                } else if (index['path-expression']) {
+                  doc.fields[index['path-expression']] = field;
+                } else {
+                  // TO DO
+                }
               });
 
               $scope.data.docs.push(doc);
@@ -451,7 +469,7 @@ angular.module('ml.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlR
         var fields = $scope.model.config.docs[directory];
         for (var i = 0; i < fields.length; i++) {
           var field = fields[i];
-          if (name === field.localname)
+          if (name === field.localname || name === field['path-expression'])
             return field;
         }
         return null;

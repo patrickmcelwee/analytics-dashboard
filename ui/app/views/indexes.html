@@ -1,0 +1,294 @@
+<div ng-show="!user.authenticated">Please log in to retrieve query options.</div>
+
+<div class="row" ng-show="user.authenticated">
+  <div class="col-md-12">
+    <span class="view-title">Indexes</span>
+    <p><b>Database</b>: {{database['database-name']}}</p>
+
+    <div class="btn-toolbar" style="margin-bottom:15px">
+      <div class="btn-group">
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#path-namespaces">Path Namespaces</button>
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#range-path-indexes">Range Path Indexes</button>
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#range-attribute-indexes">Range Attribute Indexes</button>
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#range-element-indexes">Range Element Indexes</button>
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#range-field-indexes">Range Field Indexes</button>
+      </div>
+    </div>
+
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#path-namespaces">Path Namespaces</a>
+            <button class="btn btn-xs btn-success pull-right" data-ng-click="showIndexEditor('path-namespace')">Add</button>
+          </h4>
+        </div>
+        <div id="path-namespaces" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-bordered table-hover" ng-if="database['path-namespace'].length>0">
+              <thead>
+                <tr>
+                  <th>prefix</th>
+                  <th>namespace uri</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="namespace in database['path-namespace']">
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexEditor('path-namespace',$index,namespace)">{{namespace.prefix}}</a>
+                  </td>
+                  <td>{{namespace['namespace-uri']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexRemover('path-namespace',$index)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="panel-footer">Path Namespaces</div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#range-path-indexes">Range Path Indexes</a>
+            <button class="btn btn-xs btn-success pull-right" data-ng-click="showIndexEditor('range-path-index')">Add</button>
+          </h4>
+        </div>
+        <div id="range-path-indexes" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-bordered table-hover" ng-if="database['range-path-index'].length>0">
+              <thead>
+                <tr>
+                  <th>scalar type</th>
+                  <th>path expression</th>
+                  <th>collation</th>
+                  <th>range value positions</th>
+                  <th>invalid values</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="index in database['range-path-index']">
+                  <td>{{index['scalar-type']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexEditor('range-path-index',$index,index)">{{index['path-expression']}}</a>
+                  </td>
+                  <td>{{index.collation}}</td>
+                  <td>{{index['range-value-positions']}}</td>
+                  <td>{{index['invalid-values']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexRemover('range-path-index',$index)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="panel-footer">Range Path Indexes</div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#range-attribute-indexes">Range Attribute Indexes</a>
+            <button class="btn btn-xs btn-success pull-right" data-ng-click="showIndexEditor('range-element-attribute-index')">Add</button>
+          </h4>
+        </div>
+        <div id="range-attribute-indexes" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-bordered table-hover" ng-if="database['range-element-attribute-index'].length>0">
+              <thead>
+                <tr>
+                  <th>scalar type</th>
+                  <th>parent namespace uri</th>
+                  <th>parent localname</th>
+                  <th>namespace uri</th>
+                  <th>localname</th>
+                  <th>collation</th>
+                  <th>range value positions</th>
+                  <th>invalid values</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="index in database['range-element-attribute-index']">
+                  <td>{{index['scalar-type']}}</td>
+                  <td>{{index['parent-namespace-uri']}}</td>
+                  <td>{{index['parent-localname']}}</td>
+                  <td>{{index['namespace-uri']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexEditor('range-element-attribute-index',$index,index)">{{index.localname}}</a>
+                  </td>
+                  <td>{{index.collation}}</td>
+                  <td>{{index['range-value-positions']}}</td>
+                  <td>{{index['invalid-values']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexRemover('range-element-attribute-index',$index)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="panel-footer">Range Attribute Indexes</div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#range-element-indexes">Range Element Indexes</a>
+            <button class="btn btn-xs btn-success pull-right" data-ng-click="showIndexEditor('range-element-index')">Add</button>
+          </h4>
+        </div>
+        <div id="range-element-indexes" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-bordered table-hover" ng-if="database['range-element-index'].length>0">
+              <thead>
+                <tr>
+                  <th>scalar type</th>
+                  <th>namespace uri</th>
+                  <th>localname</th>
+                  <th>collation</th>
+                  <th>range value positions</th>
+                  <th>invalid values</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="index in database['range-element-index']">
+                  <td>{{index['scalar-type']}}</td>
+                  <td>{{index['namespace-uri']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexEditor('range-element-index',$index,index)">{{index.localname}}</a>
+                  </td>
+                  <td>{{index.collation}}</td>
+                  <td>{{index['range-value-positions']}}</td>
+                  <td>{{index['invalid-values']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexRemover('range-element-index',$index)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="panel-footer">Range Element Indexes</div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-target="#range-field-indexes">Range Field Indexes</a>
+            <button class="btn btn-xs btn-success pull-right" data-ng-click="showIndexEditor('range-field-index')">Add</button>
+          </h4>
+        </div>
+        <div id="range-field-indexes" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-bordered table-hover" ng-if="database['range-field-index'].length>0">
+              <thead>
+                <tr>
+                  <th>scalar type</th>
+                  <th>field name</th>
+                  <th>collation</th>
+                  <th>range value positions</th>
+                  <th>invalid values</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="index in database['range-field-index']">
+                  <td>{{index['scalar-type']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexEditor('range-field-index',$index,index)">{{index['field-name']}}</a>
+                  </td>
+                  <td>{{index.collation}}</td>
+                  <td>{{index['range-value-positions']}}</td>
+                  <td>{{index['invalid-values']}}</td>
+                  <td>
+                    <a class="editor-link" data-ng-click="showIndexRemover('range-field-index',$index)">
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="panel-footer">Range Field Indexes</div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="delete-index-dialog" class="modal modal-wide fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Delete {{index_text}}</h4>
+      </div>
+      <div class="modal-body">This action will delete the {{index_text}}. Are you sure you want to continue?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          <span class="fa fa-close"></span> Cancel
+        </button>
+        <button type="button" class="btn btn-primary" data-ng-click="deleteIndex()">
+          <span class="fa fa-check"></span> OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="index-dialog" class="modal modal-wide fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{operation}} {{index_text}}</h4>
+      </div>
+      <form name="indexForm" ng-submit="updateIndex()" class="form-horizontal" novalidate>
+        <div class="modal-body" style="padding-top:10px;">
+          <p>The fields marked with asterisk <i class='fa fa-asterisk mandatory-field'></i> are mandatory.</p>
+          <div class="form-group" ng-show="scalarTypeNeeded">
+            <label class="col-sm-4 control-label">scalar type <i class="fa fa-asterisk mandatory-field"></i></label>
+            <div class="col-sm-8">
+              <select class="form-control" ng-model="current_index['scalar-type']">
+                <option ng-repeat="scalar_type in scalar_types" value="{{scalar_type}}">{{scalar_type}}</option>
+              </select>
+            </div>
+          </div>
+          <div ng-include="index_template_url"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" data-dismiss="modal">
+            <i class="fa fa-close"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" ng-disabled="indexForm.$invalid">
+            <i class="fa fa-check"></i> Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
